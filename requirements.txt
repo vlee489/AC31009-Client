@@ -1,0 +1,4 @@
+pysimplegui
+requests
+websockets
+appdirs
