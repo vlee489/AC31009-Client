@@ -17,4 +17,4 @@ def create_account(basrURL: str, email: str, password: str, username: str, first
     if response.status_code != 200:
         return False, response.json()['message']
     elif response.status_code == 200:
-        return True
+        return True, None

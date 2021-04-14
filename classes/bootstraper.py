@@ -119,6 +119,7 @@ class BootStrap:
             elif response.status_code == 200 and response.json()["success"]:
                 return True
         self.token = ""
+        self.update_storage_file()
         return False
 
     def login(self, email: str, password: str):
@@ -142,6 +143,7 @@ class BootStrap:
             self.token = reply['token']
             self.ID = reply["details"]["ID"]
             self.username = reply["details"]["username"]
+            self.update_storage_file()
             return True
         return False
 
