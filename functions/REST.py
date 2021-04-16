@@ -2,8 +2,6 @@
 Holds all of the functions for the rest API that aren't contained in a class
 """
 import requests
-import json
-from typing import Optional
 
 
 def create_account(basrURL: str, email: str, password: str, username: str, firstname: str, lastname: str):
