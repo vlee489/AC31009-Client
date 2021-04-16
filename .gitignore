@@ -167,3 +167,6 @@ out/
 
 # Editor-based Rest Client
 .idea/httpRequests
+
+# My test files
+/testing
