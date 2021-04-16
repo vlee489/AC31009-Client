@@ -1,9 +1,11 @@
-import requests
 import PySimpleGUI as sg
 import classes
-import time
 import functions
 import logging
+import sys
+from twisted.internet import reactor
+from twisted.python import log
+from twisted.internet.task import Cooperator
 
 # Consts
 version = "0.0.1"
@@ -63,3 +65,9 @@ def login_gui():
 
 if __name__ == '__main__':
     start_up()
+    app = classes.App(user)
+    # log.startLogging(sys.stdout)
+    # twisted.internet.task.LoopingCall is also possible
+    coop = Cooperator()
+    coop.coiterate(app.main())
+    reactor.run()  # Start the Twisted reactor.

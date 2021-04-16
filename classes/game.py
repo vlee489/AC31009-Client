@@ -37,3 +37,8 @@ class Player:
         self.username = username
         self.user_id = user_id
         self.hero = hero
+
+
+class Game:
+    def __init__(self, room_code: str):
+        self.room_code = room_code
