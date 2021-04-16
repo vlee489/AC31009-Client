@@ -11,6 +11,7 @@ black = (0, 0, 0)
 
 # Rects
 # ==============
+return_to_rect = Rect(48, 944, 330, 100)
 # Menu
 join_lobby_rect = Rect(695, 210, 530, 120)
 create_lobby_rect = Rect(695, 405, 530, 120)

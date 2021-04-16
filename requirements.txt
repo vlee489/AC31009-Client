@@ -1,8 +1,7 @@
 pysimplegui
 requests
-websocket-client
-appdirs
-asyncio
-pygame==2.0.1
+pygame
 autobahn
 twisted
+ujson
+wsaccel

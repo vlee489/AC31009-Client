@@ -21,14 +21,12 @@ def start_up():
     if not valid_token:
         logging.info("Invalid/no-existent token, starting login procedure")
         login_gui()
-    profile = user.get_profile()
-    # TODO display profile on window
 
 
 def login_gui():
     """
     Runs Login window and procedures
-    :return:
+    :return: None
     """
     window = functions.login_window('Please Login')  # create login window
     while True:
