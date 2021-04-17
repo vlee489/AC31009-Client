@@ -17,3 +17,8 @@ join_lobby_rect = Rect(695, 210, 530, 120)
 create_lobby_rect = Rect(695, 405, 530, 120)
 view_stats_rect = Rect(695, 600, 530, 120)
 exit_main_menu_rect = Rect(695, 795, 530, 120)
+# Hero Select
+hero_1_rect = Rect(188, 877, 350, 120)
+hero_2_rect = Rect(592, 877, 350, 120)
+hero_3_rect = Rect(996, 877, 350, 120)
+hero_4_rect = Rect(1387, 877, 350, 120)

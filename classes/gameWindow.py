@@ -120,10 +120,33 @@ class App:
             self.main_menu_display()
 
     def hero_select_screen(self):
-        pass
+        self.state = 4
+        self._display.fill(white)
+        self.font_bold_menu.render_to(self._display, (48, 48), "Select your Hero", black)
+        # Buttons
+        pygame.draw.rect(self._display, light_grey, hero_1_rect)
+        pygame.draw.rect(self._display, black, hero_1_rect, 1)
+        self.font_bold_menu.render_to(self._display, (297, 915), "Gatron", black)
+        pygame.draw.rect(self._display, light_grey, hero_2_rect)
+        pygame.draw.rect(self._display, black, hero_2_rect, 1)
+        self.font_bold_menu.render_to(self._display, (721, 915), "Sova", black)
+        pygame.draw.rect(self._display, light_grey, hero_3_rect)
+        pygame.draw.rect(self._display, black, hero_3_rect, 1)
+        self.font_bold_menu.render_to(self._display, (1101, 915), "Ranger", black)
 
-    def hero_select_selector(self):
-        pass
+    def hero_select_selector(self, mouse_pos):
+        hero = None
+        if hero_1_rect.collidepoint(mouse_pos):
+            hero = 1
+        elif hero_2_rect.collidepoint(mouse_pos):
+            hero = 2
+        elif hero_3_rect.collidepoint(mouse_pos):
+            hero = 3
+        if hero:
+            if self.lobby_type == 1:
+                self.open_lobby(hero)
+            elif self.lobby_type == 2:
+                self.join_lobby(hero)
 
     def open_lobby(self, hero_id: int):
         """
@@ -154,6 +177,8 @@ class App:
                         self.main_menu_selector(event.pos)
                     elif self.state == 3:
                         self.stats_selector(event.pos)
+                    elif self.state == 4:
+                        self.hero_select_selector(event.pos)
                 elif event.type == pygame.QUIT:
                     self.__exit()
             # Sets FPS display
@@ -164,6 +189,8 @@ class App:
                 self.main_menu_display()
             elif self.state == 3:
                 self.stats_display()
+            elif self.state == 4:
+                self.hero_select_screen()
             elif self.state == 2:  # if we're in game we yield so that Twisted can run Websocket calls
                 yield
             pygame.display.update()
