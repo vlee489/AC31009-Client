@@ -168,12 +168,12 @@ class BootStrap:
         :param public: Public Lobby
         :return: False or roomCode
         """
-        response = requests.post(f"http://{self.server}/login", data={
+        response = requests.post(f"http://{self.server}/openLobby", data={
             "open": public,
-        }, header={
+        }, headers={
             "Authorization": self.token
         })
-        if (response.status_code != 200) or ():
+        if response.status_code != 200:
             return False
         data = response.json()
         if data['success']:

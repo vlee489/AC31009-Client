@@ -40,5 +40,7 @@ class Player:
 
 
 class Game:
-    def __init__(self, room_code: str):
+    def __init__(self, room_code: str, app, hero_id: int):
         self.room_code = room_code
+        self.messages = []  # Stores all the messages coming in via websockets
+        self._app = app

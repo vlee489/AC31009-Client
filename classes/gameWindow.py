@@ -6,6 +6,7 @@ import pygame.freetype
 from .bootstraper import BootStrap
 from .assets import *
 from twisted.internet import reactor
+from .game import Game
 
 
 class App:
@@ -13,10 +14,12 @@ class App:
         self._run = True
         self.user = boot_strap
         self.state = 0  # 0: menu, 1: Lobby Code, 2: Game, 3: stats, 4: hero_picker 69: Error
+        self.lobby_type = 0  # 0: nothing, 1: Create Lobby, 2: Enter Lobby Code
         self.error_message = None  # Stores error message if needed
         self.game = None  # Stores game object when in play
         self.clock = pygame.time.Clock()
         self.stats = None
+        self.user_entry = ""  # Stores data entered by user
         # Start Display
         pygame.display.init()
         self._display = pygame.display.set_mode((1920, 1080), pygame.RESIZABLE)  # Creates display for the pygame window
@@ -74,8 +77,12 @@ class App:
         """
         if join_lobby_rect.collidepoint(mouse_pos):
             print("join Lobby")
+            self.lobby_type = 2
+            self.hero_select_screen()
         elif create_lobby_rect.collidepoint(mouse_pos):
             print("create Lobby")
+            self.lobby_type = 1
+            self.hero_select_screen()
         elif view_stats_rect.collidepoint(mouse_pos):
             self.stats = self.user.get_profile()
             self.stats_display()
@@ -156,14 +163,18 @@ class App:
         """
         lobby_code = self.user.open_lobby(False)  # Open Lobby
         if lobby_code:  # Enter lobby state
+            self.game = Game(lobby_code, self, hero_id)
             self.state = 2
-            if self.game is None:
-                self.error_display("Internal Error")
-            else:
-                pass
-                # TODO create game object
+            pass
+            # TODO create game object
         else:  # If there's an error we go to the error screen
             self.error_display("Unable to open lobby")
+
+    def join_lobby(self, hero_id: int):
+        self.state = 1
+        # TODO take in and Validate room code
+        self.game = Game(self.user_entry, self, hero_id)
+        pass
 
     def main(self):
         """
