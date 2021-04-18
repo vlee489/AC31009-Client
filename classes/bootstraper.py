@@ -179,3 +179,21 @@ class BootStrap:
         if data['success']:
             return data['roomCode']
 
+    def check_lobby_code(self, room_code: str) -> bool:
+        """
+        Check if room_code is valid
+        :param room_code: room code to check
+        :return: if room is open and ready to be entered
+        """
+        response = requests.post(f"http://{self.server}/checkRoomCode", data={
+            "roomCode": room_code,
+        }, headers={
+            "Authorization": self.token
+        })
+        if response.status_code == 200:
+            return True
+        elif response.status_code == 403:
+            return False
+        else:
+            raise Exception("Remote Server Error")
+

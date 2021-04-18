@@ -2,12 +2,19 @@
 Holds random assets that are used such as colours
 """
 from pygame import Color, Rect
+import pygame.freetype
 
 # Colours
 light_grey = Color('#E9E9E9')
 white = (255, 255, 255)
 red = (255, 0, 0)
 black = (0, 0, 0)
+
+# Font
+bold_48_font = pygame.freetype.Font("assets/Montserrat/Montserrat-Bold.ttf", 48)
+bold_36_font = pygame.freetype.Font("assets/Montserrat/Montserrat-Bold.ttf", 36)
+regular_29_font = pygame.freetype.Font("assets/Montserrat/Montserrat-Regular.ttf", 29)
+regular_18_font = pygame.freetype.Font("assets/Montserrat/Montserrat-Regular.ttf", 18)
 
 # Rects
 # ==============
@@ -22,3 +29,5 @@ hero_1_rect = Rect(188, 877, 350, 120)
 hero_2_rect = Rect(592, 877, 350, 120)
 hero_3_rect = Rect(996, 877, 350, 120)
 hero_4_rect = Rect(1387, 877, 350, 120)
+# Lobby Code Enter
+enter_lobby_rect = Rect(682, 584, 530, 120)
