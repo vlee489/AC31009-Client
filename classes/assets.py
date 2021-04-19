@@ -11,6 +11,7 @@ red = (255, 0, 0)
 black = (0, 0, 0)
 
 # Font
+pygame.freetype.init()
 bold_48_font = pygame.freetype.Font("assets/Montserrat/Montserrat-Bold.ttf", 48)
 bold_36_font = pygame.freetype.Font("assets/Montserrat/Montserrat-Bold.ttf", 36)
 regular_29_font = pygame.freetype.Font("assets/Montserrat/Montserrat-Regular.ttf", 29)
