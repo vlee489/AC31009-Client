@@ -8,10 +8,11 @@ from twisted.python import log
 from twisted.internet.task import Cooperator
 
 # Consts
-version = "0.0.1"
-server = "localhost:4000"
+version = "0.0.1"  # Game Version for gameData matching
+server = "localhost:4000"  # Location of server
+port = 4000  # Port server is running on Used for Twisted Reactor
 # Global Var
-user = classes.BootStrap(server, version)
+user = classes.BootStrap(server, version, port)
 profile = None
 
 

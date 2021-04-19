@@ -32,7 +32,7 @@ class BootStrap:
     Handles all storage and tasks for communicating with the server's REST api
     """
 
-    def __init__(self, server: str, version: str):
+    def __init__(self, server: str, version: str, port: int):
         """
         Default constructor
         :param server: server link
@@ -41,6 +41,7 @@ class BootStrap:
         self.dataDir = f"{get_user_data_dir('AC31009-Untitled-RPG')}/storage.json"
         self.server = server
         self.version = version
+        self.port = port
         print(self.dataDir)
         if not os.path.isfile(self.dataDir):
             self.__createStorage__()

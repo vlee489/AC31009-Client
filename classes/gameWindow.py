@@ -7,10 +7,13 @@ from .bootstraper import BootStrap
 from .assets import *
 from twisted.internet import reactor
 from .game import Game
+from .ws import URPGClientFactory
+import json
 
 
 class App:
     def __init__(self, boot_strap: BootStrap):
+        self._factory = None
         self._run = True
         self.user = boot_strap
         self.state = 0  # 0: menu, 1: Lobby Code, 2: Game, 3: stats, 4: hero_picker 69: Error
@@ -25,14 +28,14 @@ class App:
         pygame.display.init()
         self._display = pygame.display.set_mode((1920, 1080), pygame.RESIZABLE)  # Creates display for the pygame window
         print(pygame.display.Info())
-        # Starts Fonts
-        pygame.freetype.init()
-        self._factory = None
+        self.open_websocket()
 
     @property
     def websocket(self):
         if self._factory:
             return self._factory._protocol
+        else:
+            return None
 
     @staticmethod
     def __exit():
@@ -43,6 +46,18 @@ class App:
         pygame.quit()
         reactor.stop()
         exit(0)
+
+    def open_websocket(self):
+        self._factory = URPGClientFactory(self.user.server, self, self.user.token)
+        reactor.connectTCP('127.0.0.1', self.user.port, self._factory)
+
+    def close_websocket(self):
+        if self.websocket:
+            self.websocket.sendClose(1000)
+
+    def ws_send_json(self, message: dict):
+        payload = json.dumps(message, ensure_ascii=False).encode('utf8')
+        self.websocket.sendMessage(payload)
 
     def main_menu_display(self):
         """
@@ -184,8 +199,7 @@ class App:
         pygame.draw.rect(self._display, light_grey, (697, 540, 500, 3))
 
     def join_lobby_key_press(self, event):
-        if event.key == pygame.K_BACKSPACE:
-            # If backspace remove last char
+        if event.key == pygame.K_BACKSPACE:  # If backspace remove last char
             self.user_entry = self.user_entry[:-1]
         else:
             self.user_entry += event.unicode
@@ -234,9 +248,9 @@ class App:
             elif self.state == 69:
                 self.error_display(None)
             elif self.state == 2:
-                self.game.main()
-                yield  # if we're in game we yield so that Twisted can run Websocket calls
+                self.game.main(pygame.event.get())
             # Sets FPS display
             self.clock.tick(60)
             regular_29_font.render_to(self._display, (0, 0), f"FPS: {round(self.clock.get_fps(), 1)}", black)
             pygame.display.update()
+            yield
