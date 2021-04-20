@@ -1,5 +1,6 @@
 from .player import Player
 from .assets import *
+import pygame
 
 
 class Game:

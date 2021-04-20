@@ -1,8 +1,7 @@
 """
 Holds random assets that are used such as colours
 """
-from pygame import Color, Rect
-import pygame.freetype
+from pygame import Color, Rect, freetype
 
 # Colours
 light_grey = Color('#E9E9E9')
@@ -13,11 +12,11 @@ green = Color('#0EA453')
 blue = Color('#49B4F0')
 
 # Font
-pygame.freetype.init()
-bold_48_font = pygame.freetype.Font("assets/Montserrat/Montserrat-Bold.ttf", 48)
-bold_36_font = pygame.freetype.Font("assets/Montserrat/Montserrat-Bold.ttf", 36)
-regular_29_font = pygame.freetype.Font("assets/Montserrat/Montserrat-Regular.ttf", 29)
-regular_18_font = pygame.freetype.Font("assets/Montserrat/Montserrat-Regular.ttf", 18)
+freetype.init()
+bold_48_font = freetype.Font("assets/Montserrat/Montserrat-Bold.ttf", 48)
+bold_36_font = freetype.Font("assets/Montserrat/Montserrat-Bold.ttf", 36)
+regular_29_font = freetype.Font("assets/Montserrat/Montserrat-Regular.ttf", 29)
+regular_18_font = freetype.Font("assets/Montserrat/Montserrat-Regular.ttf", 18)
 # Rects
 # ==============
 return_to_rect = Rect(48, 944, 330, 100)
