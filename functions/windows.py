@@ -1,3 +1,6 @@
+"""
+Contains the window defs for login GUI
+"""
 import PySimpleGUI as sg
 
 

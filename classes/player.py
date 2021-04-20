@@ -17,6 +17,7 @@ class Player:
     """
     Stores data on a player
     """
+    hero: HeroData
 
     def __init__(self, username: str, user_id: str, hero: HeroData,
                  hp: int, shield: int, speed: int, speed_length: int):
