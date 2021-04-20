@@ -13,8 +13,10 @@ blue = Color('#49B4F0')
 
 # Font
 freetype.init()
+bold_64_font = freetype.Font("assets/Montserrat/Montserrat-Bold.ttf", 64)
 bold_48_font = freetype.Font("assets/Montserrat/Montserrat-Bold.ttf", 48)
 bold_36_font = freetype.Font("assets/Montserrat/Montserrat-Bold.ttf", 36)
+regular_48_font = freetype.Font("assets/Montserrat/Montserrat-Regular.ttf", 48)
 regular_29_font = freetype.Font("assets/Montserrat/Montserrat-Regular.ttf", 29)
 regular_18_font = freetype.Font("assets/Montserrat/Montserrat-Regular.ttf", 18)
 # Rects
@@ -32,3 +34,9 @@ hero_3_rect = Rect(996, 877, 350, 120)
 hero_4_rect = Rect(1387, 877, 350, 120)
 # Lobby Code Enter
 enter_lobby_rect = Rect(682, 584, 530, 120)
+# Move Type Select
+attack_move_rect = Rect(386, 902, 350, 120)
+item_move_rect = Rect(790, 902, 350, 120)
+skip_rect = Rect(1194, 902, 350, 120)
+
+back_button_rect = Rect(101, 890, 120, 120)

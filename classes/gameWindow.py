@@ -226,6 +226,8 @@ class App:
                         self.main_menu_selector(event.pos)
                     elif self.state == 1:
                         self.join_lobby_selector(event.pos)
+                    elif self.state == 2:
+                        self.game.mouse_input_manager(event.pos)
                     elif self.state == 3:
                         self.stats_selector(event.pos)
                     elif self.state == 4:
@@ -250,7 +252,7 @@ class App:
             elif self.state == 69:
                 self.error_display(None)
             elif self.state == 2:
-                self.game.main(pygame.event.get())
+                self.game.main()
             # Sets FPS display
             self.clock.tick(60)
             regular_29_font.render_to(self.display, (0, 0), f"FPS: {round(self.clock.get_fps(), 1)}", black)
