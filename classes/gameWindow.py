@@ -28,7 +28,7 @@ class App:
         self.game_data = GameData(self.user.game_data)
         # Start Display
         pygame.display.init()
-        self.display = pygame.display.set_mode((1920, 1080), pygame.RESIZABLE)  # Creates display for the pygame window
+        self.display = pygame.display.set_mode((1920, 1080))  # Creates display for the pygame window
         print(pygame.display.Info())
         self.open_websocket()
 

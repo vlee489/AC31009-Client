@@ -1,4 +1,5 @@
 from .player import Player
+from .assets import *
 
 
 class Game:
@@ -55,7 +56,55 @@ class Game:
         """
         self._app.ws_send_json(message)
 
+    def display_stats(self):
+        """
+        Display stats on the
+        :return: None
+        """
+        # calc player_a HP box length
+        player_a_hp_width = (self.player_a.stats.HP // self.player_a.hero.HP)*500
+        player_b_hp_width = (self.player_b.stats.HP // self.player_b.hero.HP)*500
+        # Draw Player A Health
+        bold_36_font.render_to(self.display, (22, 34), "HP", black)
+        pygame.draw.rect(self.display, green, (86, 30, player_a_hp_width, 35))
+        pygame.draw.rect(self.display, black, (86, 30, 500, 35), 1)
+        # Draw Player B Health
+        bold_36_font.render_to(self.display, (1848, 34), "HP", black)
+        pygame.draw.rect(self.display, green, ((1333 + (500-player_b_hp_width)), 30, player_a_hp_width, 35))
+        pygame.draw.rect(self.display, black, (1333, 30, 500, 35), 1)
+        # Draw Player A Shields
+        bold_36_font.render_to(self.display, (22, 84), "Shield", black)
+        start_a_x_cord = 147
+        for x in range(self.player_a.stats.shield):  # Draws the shield player has
+            pygame.draw.rect(self.display, blue, (start_a_x_cord, 84, 100, 35))
+            start_a_x_cord += 113
+        start_a_x_cord = 147
+        for x in range(self.player_a.hero.shield):  # draws the outlines for all shield available
+            pygame.draw.rect(self.display, black, (start_a_x_cord, 84, 100, 35), 1)
+            start_a_x_cord += 113
+        # Draw Player B Shields
+        bold_36_font.render_to(self.display, (1784, 84), "Shield", black)
+        start_b_x_cord = 1677
+        for x in range(self.player_b.stats.shield):  # Draws the shield player has
+            pygame.draw.rect(self.display, blue, (start_b_x_cord, 84, 100, 35))
+            start_b_x_cord -= 113
+        start_b_x_cord = 1677
+        for x in range(self.player_b.hero.shield):  # draws the outlines for all shield available
+            pygame.draw.rect(self.display, black, (start_b_x_cord, 84, 100, 35), 1)
+            start_b_x_cord -= 113
+        # Display Usernames
+        regular_29_font.render_to(self.display, (22, 130), f"{self.player_a.username}", black)
+        p_b_width = regular_29_font.get_rect(f"{self.player_b.username}")[2]  # Used to work our right offset
+        regular_29_font.render_to(self.display, ((1900-p_b_width), 130), f"{self.player_b.username}", black)
+
     def main(self, events):
+        """
+        Runs the game event loop
+        :param events: pygame.event
+        :return: None
+        """
+        if self.active:
+            self.display_stats()
         # Process messages in queue
         for x in range(len(self.messages)):
             message = self.messages.pop(0)  # first message in queue
@@ -86,3 +135,4 @@ class Game:
                         self.player_num = 1
                     else:
                         raise LookupError("User isn't either player")  # Throw an error is we're neither player
+                    self.state = 2

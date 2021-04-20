@@ -9,6 +9,8 @@ light_grey = Color('#E9E9E9')
 white = (255, 255, 255)
 red = (255, 0, 0)
 black = (0, 0, 0)
+green = Color('#0EA453')
+blue = Color('#49B4F0')
 
 # Font
 pygame.freetype.init()
@@ -16,7 +18,6 @@ bold_48_font = pygame.freetype.Font("assets/Montserrat/Montserrat-Bold.ttf", 48)
 bold_36_font = pygame.freetype.Font("assets/Montserrat/Montserrat-Bold.ttf", 36)
 regular_29_font = pygame.freetype.Font("assets/Montserrat/Montserrat-Regular.ttf", 29)
 regular_18_font = pygame.freetype.Font("assets/Montserrat/Montserrat-Regular.ttf", 18)
-
 # Rects
 # ==============
 return_to_rect = Rect(48, 944, 330, 100)
