@@ -35,8 +35,8 @@ hero_4_rect = Rect(1387, 877, 350, 120)
 # Lobby Code Enter
 enter_lobby_rect = Rect(682, 584, 530, 120)
 # Move Type Select
-attack_move_rect = Rect(386, 902, 350, 120)
-item_move_rect = Rect(790, 902, 350, 120)
-skip_rect = Rect(1194, 902, 350, 120)
+attack_move_rect = Rect(386, 890, 350, 120)
+item_move_rect = Rect(790, 890, 350, 120)
+skip_rect = Rect(1194, 890, 350, 120)
 
 back_button_rect = Rect(101, 890, 120, 120)

@@ -1,4 +1,5 @@
 from .player import Player
+from .gameData import GameData, HeroData
 from .assets import *
 import pygame
 
@@ -8,23 +9,24 @@ class Game:
     Actually runs the game itself when in a room/lobby
     """
     def __init__(self, room_code: str, app, hero_id: int):
-        self.room_code = room_code
+        print(f"room code: {room_code}")
+        self.room_code = room_code  # Stores the room-code that needs sent back to the server per move execution
         self.messages = []  # Stores all the messages coming in via websockets
         self._app = app  # Stores ref back to the app the launches the Game object
-        # 0 : Waiting on Response
+        self.state = 0
+        # 0 : Waiting on Response from server
         # 1 : Waiting on other player
         # 2 : Pick Move Type
         # 3 : Pick Attack
         # 4 : Pick Item
         # 5 : waiting on player
         # 6 : playing Move
-        self.state = 0
-        self.active = False
+        self.active = False  # If room is active
         # Store Player Data
         self.player_a = None
         self.player_b = None
         self.player_num = -1  # 0 = A, 1 = B  States which player we are
-        self.action = None
+        self.action = None  # Stores the last action carried out and sent to server
         # Attempt to join room
         self.send_ws_json({
             "action": "join",
@@ -36,7 +38,7 @@ class Game:
         self.button_rect = []  # Used to store where the rects are input checking
 
     @property
-    def display(self):
+    def display(self) -> pygame.display:
         """
         Returns the pygame display
         :return: pygame.display
@@ -44,18 +46,18 @@ class Game:
         return self._app.display
 
     @property
-    def game_data(self):
+    def game_data(self) -> GameData:
         """
         Return the game data object
-        :return: classes.gameData.GameData
+        :return: GameData
         """
         return self._app.game_data
 
     @property
-    def get_player_hero(self):
+    def get_player_hero(self) -> HeroData:
         """
         Get the hero of the player
-        :return: gameData.HeroData
+        :return: HeroData
         """
         if self.player_num == 0:
             return self.player_a.hero
@@ -123,15 +125,15 @@ class Game:
         # Attack Box
         pygame.draw.rect(self.display, light_grey, attack_move_rect)
         pygame.draw.rect(self.display, black, attack_move_rect, 1)
-        bold_48_font.render_to(self.display, (498, 940), "Attack", black)
+        bold_48_font.render_to(self.display, (480, 928), "Attack", black)
         # item box
         pygame.draw.rect(self.display, light_grey, item_move_rect)
         pygame.draw.rect(self.display, black, item_move_rect, 1)
-        bold_48_font.render_to(self.display, (880, 940), "Use Item", black)
+        bold_48_font.render_to(self.display, (860, 928), "Use Item", black)
         # Skip Box
         pygame.draw.rect(self.display, light_grey, skip_rect)
         pygame.draw.rect(self.display, black, skip_rect, 1)
-        bold_48_font.render_to(self.display, (1328, 940), "Skip", black)
+        bold_48_font.render_to(self.display, (1310, 928), "Skip", black)
 
     def move_type_input(self, mouse_pos):
         """
@@ -157,6 +159,22 @@ class Game:
         pygame.draw.rect(self.display, light_grey, back_button_rect)
         pygame.draw.rect(self.display, black, back_button_rect, 1)
 
+    def _display_button_rect(self, name: str, rect: pygame.Rect, start_x: int):
+        """
+        Place rect with text centered
+        :param name: text to place
+        :param rect: Rect to draw for box
+        :param start_x: X location to place button
+        :return: None
+        """
+        # Work out where the text will go
+        name_width = bold_48_font.get_rect(f"{name}")[2]
+        text_x = (start_x + 175) - (name_width // 2)
+        # Display button
+        pygame.draw.rect(self.display, light_grey, rect)
+        pygame.draw.rect(self.display, black, rect, 1)
+        bold_48_font.render_to(self.display, (text_x, 928), f"{name}", black)
+
     def display_attacks(self):
         """
         Works on displaying the buttons for attacks
@@ -165,7 +183,7 @@ class Game:
         self.button_rect = []  # Empty array
         # Display back button
         self.display_back_button()
-        hero = self.get_player_hero()
+        hero = self.get_player_hero
         start_x = 275
         for attack in hero.moves:  # For each attack a hero can make
             working_rect = Rect(start_x, 890, 350, 120)  # This is where out button should go
@@ -174,19 +192,27 @@ class Game:
                 "move_id": attack.ID,
                 "move_type": 0  # 0: attack, 1: item, 2:shield, 3: skip
             })
-            # Work out where the text will go
-            attack_name_width = bold_48_font.get_rect(f"{attack.name}")[2]
-            text_x = (start_x + 175) - (attack_name_width // 2)
-            # Display button
-            pygame.draw.rect(self.display, light_grey, working_rect)
-            pygame.draw.rect(self.display, black, working_rect, 1)
-            bold_48_font.render_to(self.display, (text_x, 928), f"{attack.name}", black)
+            self._display_button_rect(attack.name, working_rect, start_x)
             start_x += 404  # Set location of next button
-            pass
 
-    def attack_input(self, mouse_pos):
+    def display_items(self):
+        self.button_rect = []  # Empty array
+        # Display back button
+        self.display_back_button()
+        start_x = 275
+        for item in self.game_data.items:
+            working_rect = Rect(start_x, 890, 350, 120)  # This is where out button should go
+            self.button_rect.append({
+                "rect": working_rect,
+                "move_id": item.ID,
+                "move_type": 1  # 0: attack, 1: item, 2:shield, 3: skip
+            })
+            self._display_button_rect(item.name, working_rect, start_x)
+            start_x += 404  # Set location of next button
+
+    def move_input(self, mouse_pos):
         """
-        Process input for when attacks being selected
+        Process input for when move being selected
         :param mouse_pos: Mouse Location
         :return: None
         """
@@ -205,7 +231,6 @@ class Game:
             # If back button is pressed, go back to the move type select screen
             self.state = 2
 
-
     def mouse_input_manager(self, mouse_pos):
         """
         Process Mouse input for game
@@ -214,8 +239,8 @@ class Game:
         """
         if self.state == 2:
             self.move_type_input(mouse_pos)
-        elif self.state == 3:
-            self.attack_input(mouse_pos)
+        elif self.state == 3 or self.state == 4:
+            self.move_input(mouse_pos)
 
     def main(self):
         """
@@ -231,6 +256,8 @@ class Game:
                 self.display_move_type()
             elif self.state == 3:
                 self.display_attacks()
+            elif self.state == 4:
+                self.display_items()
         else:
             self.display_waiting_on_join()
         # Process messages in queue
