@@ -61,6 +61,11 @@ class App:
         payload = json.dumps(message, ensure_ascii=False).encode('utf8')
         self.websocket.sendMessage(payload)
 
+    def back_to_menu(self):
+        self.state = 0
+        self.main_menu_display()
+        self.game = None
+
     def main_menu_display(self):
         """
         Displays Menu

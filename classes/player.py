@@ -12,6 +12,20 @@ class PlayerStats:
         self.speed = speed
         self.speed_length = speed_length
 
+    def set_stats(self, HP: int, shield: int, speed: int, speed_length: int):
+        """
+        Sets stats
+        :param HP: hp
+        :param shield: shield
+        :param speed: speed
+        :param speed_length: speed_length
+        :return:
+        """
+        self.HP = HP
+        self.shield = shield
+        self.speed = speed
+        self.speed_length = speed_length
+
 
 class Player:
     """

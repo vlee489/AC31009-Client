@@ -9,18 +9,17 @@ from twisted.internet.task import Cooperator
 
 # Consts
 version = "0.0.1"  # Game Version for gameData matching
-server = "localhost:4000"  # Location of server
+server = "localhost:4000"  # Location of server with port
 port = 4000  # Port server is running on Used for Twisted Reactor
 # Global Var
 user = classes.BootStrap(server, version, port)
-profile = None
 
 
 def start_up():
-    logging.info("Validating User Token")
+    print("Validating User Token")
     valid_token = user.validate_token()
     if not valid_token:
-        logging.info("Invalid/no-existent token, starting login procedure")
+        print("Invalid/no-existent token, starting login procedure")
         login_gui()
 
 

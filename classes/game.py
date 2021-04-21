@@ -19,14 +19,14 @@ class Game:
         # 2 : Pick Move Type
         # 3 : Pick Attack
         # 4 : Pick Item
-        # 5 : waiting on player
-        # 6 : playing Move
+        # 5 : playing Move
         self.active = False  # If room is active
         # Store Player Data
         self.player_a = None
         self.player_b = None
         self.player_num = -1  # 0 = A, 1 = B  States which player we are
         self.action = None  # Stores the last action carried out and sent to server
+        self.winner = None  # Stores the winner at the end of the game
         # Attempt to join room
         self.send_ws_json({
             "action": "join",
@@ -36,6 +36,7 @@ class Game:
             }
         })
         self.button_rect = []  # Used to store where the rects are input checking
+        self.moves = []  # Holds all the moves that need to be played out
 
     @property
     def display(self) -> pygame.display:
@@ -86,15 +87,15 @@ class Game:
         :return: None
         """
         # calc player_a HP box length
-        player_a_hp_width = (self.player_a.stats.HP // self.player_a.hero.HP) * 500
-        player_b_hp_width = (self.player_b.stats.HP // self.player_b.hero.HP) * 500
+        player_a_hp_width = int((self.player_a.stats.HP / self.player_a.hero.HP) * 500)
+        player_b_hp_width = int((self.player_b.stats.HP / self.player_b.hero.HP) * 500)
         # Draw Player A Health
         bold_36_font.render_to(self.display, (22, 34), "HP", black)
         pygame.draw.rect(self.display, green, (86, 30, player_a_hp_width, 35))
         pygame.draw.rect(self.display, black, (86, 30, 500, 35), 1)
         # Draw Player B Health
         bold_36_font.render_to(self.display, (1848, 34), "HP", black)
-        pygame.draw.rect(self.display, green, ((1333 + (500 - player_b_hp_width)), 30, player_a_hp_width, 35))
+        pygame.draw.rect(self.display, green, ((1333 + (500 - player_b_hp_width)), 30, player_b_hp_width, 35))
         pygame.draw.rect(self.display, black, (1333, 30, 500, 35), 1)
         # Draw Player A Shields
         bold_36_font.render_to(self.display, (22, 84), "Shield", black)
@@ -231,6 +232,18 @@ class Game:
             # If back button is pressed, go back to the move type select screen
             self.state = 2
 
+    def display_winner(self):
+        if self.winner == self.player_num:
+            message = "You are the winner!"
+        else:
+            message = "You've Lost!"
+        message_x = 962 - ((bold_48_font.get_rect(f"{message}")[2])//2)
+        bold_48_font.render_to(self.display, (message_x, 60), f"{message}", black)
+        # Draw back button
+        pygame.draw.rect(self.display, light_grey, return_to_rect)
+        pygame.draw.rect(self.display, black, return_to_rect, 1)
+        regular_29_font.render_to(self.display, (100, 980), "Return to Menu", black)
+
     def mouse_input_manager(self, mouse_pos):
         """
         Process Mouse input for game
@@ -241,6 +254,9 @@ class Game:
             self.move_type_input(mouse_pos)
         elif self.state == 3 or self.state == 4:
             self.move_input(mouse_pos)
+        elif (not self.active) and (self.winner is not None):
+            if return_to_rect.collidepoint(mouse_pos):
+                self._app.back_to_menu()
 
     def main(self):
         """
@@ -249,17 +265,23 @@ class Game:
         """
         if self.active:
             self.display_stats()
-            # We don't display stuff for state 0 as it usually changes in a split second after server responds
-            if self.state == 1:
-                self.display_wait_for_opponent()
-            elif self.state == 2:
-                self.display_move_type()
-            elif self.state == 3:
-                self.display_attacks()
-            elif self.state == 4:
-                self.display_items()
-        else:
-            self.display_waiting_on_join()
+        # We don't display stuff for state 0 as it usually changes in a split second after server responds
+        if not self.active:
+            if self.winner is not None:
+                self.display_winner()
+            else:
+                self.display_waiting_on_join()
+        elif self.state == 1:
+            self.display_wait_for_opponent()
+        elif self.state == 2:
+            self.display_move_type()
+        elif self.state == 3:
+            self.display_attacks()
+        elif self.state == 4:
+            self.display_items()
+        elif self.state == 5:
+            self.state = 2
+            # TODO, play out moves made by players
         # Process messages in queue
         for x in range(len(self.messages)):
             message = self.messages.pop(0)  # first message in queue
@@ -292,3 +314,15 @@ class Game:
                     else:
                         raise LookupError("User isn't either player")  # Throw an error is we're neither player
                     self.state = 2
+                if message['reply'] == "round":  # If new round data sent over
+                    self.moves = self.moves + message["moves"]  # Place the moves to be shown into the array
+                    player_a = message["playerA"]
+                    self.player_a.stats.set_stats(player_a['HP'], player_a['shield'],
+                                                  player_a["speed"], player_a["speedLength"])
+                    player_b = message['playerB']
+                    self.player_b.stats.set_stats(player_b['HP'], player_b['shield'],
+                                                  player_b["speed"], player_b["speedLength"])
+                    self.active = message['active']
+                    if message["winner"] != "None":
+                        self.winner = message["winner"]
+                    self.state = 5
