@@ -89,12 +89,14 @@ class BootStrap:
         game_data = game_data_request.json()
         if self.game_data["version"] != game_data["version"]:
             self.game_data = game_data
+            self.update_storage_file()
 
     def update_storage_file(self):
         """
         Updates storage file
         :return: None
         """
+        print("Updating local game data")
         settings = {
             "gameVersion": self.version,
             "gameData": self.game_data,
@@ -114,10 +116,7 @@ class BootStrap:
             response = requests.post(f"http://{self.server}/validateToken", data={
                 "token": self.token,
             })
-            if (response.status_code == 401) or (response.status_code != 200):
-                self.token = ""
-                return False
-            elif response.status_code == 200 and response.json()["success"]:
+            if response.status_code == 200 and response.json()["valid"]:
                 return True
         self.token = ""
         self.update_storage_file()
