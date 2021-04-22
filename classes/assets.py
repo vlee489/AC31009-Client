@@ -5,6 +5,8 @@ from pygame import Color, Rect, freetype
 
 # Colours
 light_grey = Color('#E9E9E9')
+light_grey_transparent = Color(233, 233, 233, 50)
+black_transparent = (0, 0, 0, 50)
 white = (255, 255, 255)
 red = (255, 0, 0)
 black = (0, 0, 0)
@@ -35,8 +37,9 @@ hero_4_rect = Rect(1387, 877, 350, 120)
 # Lobby Code Enter
 enter_lobby_rect = Rect(682, 584, 530, 120)
 # Move Type Select
-attack_move_rect = Rect(386, 890, 350, 120)
-item_move_rect = Rect(790, 890, 350, 120)
-skip_rect = Rect(1194, 890, 350, 120)
+attack_move_rect = Rect(182, 890, 350, 120)
+item_move_rect = Rect(586, 890, 350, 120)
+shield_rect = Rect(990, 890, 350, 120)
+skip_rect = Rect(1394, 890, 350, 120)
 
 back_button_rect = Rect(101, 890, 120, 120)

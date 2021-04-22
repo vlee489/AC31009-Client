@@ -1,4 +1,4 @@
-from .player import Player
+from .player import Player, PlayerStats
 from .gameData import GameData, HeroData
 from .assets import *
 import pygame
@@ -8,6 +8,7 @@ class Game:
     """
     Actually runs the game itself when in a room/lobby
     """
+
     def __init__(self, room_code: str, app, hero_id: int):
         print(f"room code: {room_code}")
         self.room_code = room_code  # Stores the room-code that needs sent back to the server per move execution
@@ -64,6 +65,17 @@ class Game:
             return self.player_a.hero
         else:
             return self.player_b.hero
+
+    @property
+    def get_player_stats(self) -> PlayerStats:
+        """
+        Get the stats of the player
+        :return: PlayerStats
+        """
+        if self.player_num == 0:
+            return self.player_a.stats
+        else:
+            return self.player_b.stats
 
     def send_ws_json(self, message: dict):
         """
@@ -126,15 +138,26 @@ class Game:
         # Attack Box
         pygame.draw.rect(self.display, light_grey, attack_move_rect)
         pygame.draw.rect(self.display, black, attack_move_rect, 1)
-        bold_48_font.render_to(self.display, (480, 928), "Attack", black)
+        bold_48_font.render_to(self.display, (270, 928), "Attack", black)
         # item box
         pygame.draw.rect(self.display, light_grey, item_move_rect)
         pygame.draw.rect(self.display, black, item_move_rect, 1)
-        bold_48_font.render_to(self.display, (860, 928), "Use Item", black)
+        bold_48_font.render_to(self.display, (655, 928), "Use Item", black)
+        # Shield Box
+        # get is player has shield and grey out if they don't
+        if self.get_player_stats.shield <= 0:
+            box_colour = light_grey_transparent
+            text_colour = black_transparent
+        else:
+            box_colour = light_grey
+            text_colour = black
+        pygame.draw.rect(self.display, box_colour, shield_rect)
+        pygame.draw.rect(self.display, text_colour, shield_rect, 1)
+        bold_48_font.render_to(self.display, (1086, 928), "Shield", text_colour)
         # Skip Box
         pygame.draw.rect(self.display, light_grey, skip_rect)
         pygame.draw.rect(self.display, black, skip_rect, 1)
-        bold_48_font.render_to(self.display, (1310, 928), "Skip", black)
+        bold_48_font.render_to(self.display, (1510, 928), "Skip", black)
 
     def move_type_input(self, mouse_pos):
         """
@@ -146,8 +169,25 @@ class Game:
             self.state = 3
         elif item_move_rect.collidepoint(mouse_pos):
             self.state = 4
+        elif shield_rect.collidepoint(mouse_pos):
+            if self.get_player_stats.shield > 0:  # Only trigger if player has shields to use
+                self.send_ws_json({
+                    "action": "move",
+                    "roomCode": self.room_code,
+                    "move": {
+                        "moveType": 2,
+                        "id": 0
+                    }
+                })
         elif skip_rect.collidepoint(mouse_pos):
-            pass
+            self.send_ws_json({
+                "action": "move",
+                "roomCode": self.room_code,
+                "move": {
+                    "moveType": 3,
+                    "id": 0
+                }
+            })
 
     def display_wait_for_opponent(self):
         bold_64_font.render_to(self.display, (570, 920), "Waiting on opponent....", black)
@@ -237,7 +277,7 @@ class Game:
             message = "You are the winner!"
         else:
             message = "You've Lost!"
-        message_x = 962 - ((bold_48_font.get_rect(f"{message}")[2])//2)
+        message_x = 962 - ((bold_48_font.get_rect(f"{message}")[2]) // 2)
         bold_48_font.render_to(self.display, (message_x, 60), f"{message}", black)
         # Draw back button
         pygame.draw.rect(self.display, light_grey, return_to_rect)
