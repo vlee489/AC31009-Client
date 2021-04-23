@@ -7,26 +7,30 @@ class MoveData:
     """
     Stores data on moves
     """
-    def __init__(self, ID: int, name: str, description: str, HP: int, recoil: int, speed: int):
+    def __init__(self, ID: int, name: str, description: str, HP: int, recoil: int, speed: int, animation_id: int):
         self.ID = ID
         self.name = name
         self.description = description
         self.HP = HP
         self.recoil = recoil
         self.speed = speed
+        self.animation = animation_id
 
 
 class HeroData:
     """
     Stores data of players character
     """
-    def __init__(self, ID: int, name: str, description: str, HP: int, shield: int, moves: list):
+    def __init__(self, ID: int, name: str, description: str, HP: int, shield: int, moves: list, idle_animation_id: int,
+                 death_animation_id: int):
         self.ID = ID
         self.name = name
         self.description = description
         self.HP = HP
         self.shield = shield
         self.moves = moves
+        self.idle_animation = idle_animation_id
+        self.death_animation = death_animation_id
 
 
 class StatData:
@@ -56,9 +60,9 @@ class GameData:
             moves = []
             for attack in hero['attacks']:
                 moves.append(MoveData(attack["id"], attack["name"], attack["description"], attack["HPDamage"],
-                                      attack["recoil"], attack["speed"]))
-            working_hero = HeroData(hero["id"], hero["name"], hero["description"],
-                                    hero["health"], hero["shields"], moves)
+                                      attack["recoil"], attack["speed"], attack["animationID"]))
+            working_hero = HeroData(hero["id"], hero["name"], hero["description"], hero["health"], hero["shields"],
+                                    moves, hero["idleAnimationID"], hero['deathAnimationID'])
             self.heroes.append(working_hero)
             self.heroes_by_id[f"{hero['id']}"] = working_hero
         # Go through items
