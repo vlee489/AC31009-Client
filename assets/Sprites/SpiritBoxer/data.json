@@ -1,0 +1,61 @@
+{
+  "name": "Sprit Boxer",
+  "creator": "penusbmic",
+  "link": "https://penusbmic.itch.io/characterpack1",
+  "sprites": [
+    {
+      "id": 0,
+      "name": "idle",
+      "file": "Idle.png",
+      "spriteHeight": 44,
+      "spriteWidth": 137,
+      "frames": 4,
+      "load": "vertical"
+    },
+    {
+      "id": 1,
+      "name": "attack1",
+      "file": "attack 1.png",
+      "spriteHeight": 44,
+      "spriteWidth": 137,
+      "frames": 6,
+      "load": "vertical"
+    },
+    {
+      "id": 2,
+      "name": "attack2",
+      "file": "attack 2.png",
+      "spriteHeight": 44,
+      "spriteWidth": 137,
+      "frames": 13,
+      "load": "vertical"
+    },
+    {
+      "id": 3,
+      "name": "attack3",
+      "file": "attack 3.png",
+      "spriteHeight": 44,
+      "spriteWidth": 137,
+      "frames": 10,
+      "load": "vertical"
+    },
+    {
+      "id": 4,
+      "name": "deathAndDamage",
+      "file": "Damaged & Death.png",
+      "spriteHeight": 44,
+      "spriteWidth": 137,
+      "frames": 10,
+      "load": "vertical"
+    },
+    {
+      "id": 5,
+      "name": "run",
+      "file": "Run.png",
+      "spriteHeight": 44,
+      "spriteWidth": 137,
+      "frames": 6,
+      "load": "vertical"
+    }
+  ]
+}

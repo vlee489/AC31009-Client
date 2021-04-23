@@ -1,0 +1,61 @@
+{
+  "name": "Hero Knight",
+  "creator": "luizmelo",
+  "link": "https://luizmelo.itch.io/hero-knight",
+  "sprites": [
+    {
+      "id": 0,
+      "name": "idle",
+      "file": "Idle.png",
+      "spriteHeight": 180,
+      "spriteWidth": 231,
+      "frames": 11,
+      "load": "horizontal"
+    },
+    {
+      "id": 1,
+      "name": "attack1",
+      "file": "Attack1.png",
+      "spriteHeight": 180,
+      "spriteWidth": 180,
+      "frames": 7,
+      "load": "horizontal"
+    },
+    {
+      "id": 2,
+      "name": "attack2",
+      "file": "Attack2.png",
+      "spriteHeight": 180,
+      "spriteWidth": 180,
+      "frames": 7,
+      "load": "horizontal"
+    },
+    {
+      "id": 3,
+      "name": "jump",
+      "file": "Jump.png",
+      "spriteHeight": 180,
+      "spriteWidth": 180,
+      "frames": 3,
+      "load": "horizontal"
+    },
+    {
+      "id": 4,
+      "name": "death",
+      "file": "Death.png",
+      "spriteHeight": 180,
+      "spriteWidth": 180,
+      "frames": 11,
+      "load": "horizontal"
+    },
+    {
+      "id": 5,
+      "name": "run",
+      "file": "Run.png",
+      "spriteHeight": 180,
+      "spriteWidth": 180,
+      "frames": 8,
+      "load": "horizontal"
+    }
+  ]
+}

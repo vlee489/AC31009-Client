@@ -1,0 +1,61 @@
+{
+  "name": "Wizard Pack",
+  "creator": "luizmelo",
+  "link": "https://luizmelo.itch.io/wizard-pack",
+  "sprites": [
+    {
+      "id": 0,
+      "name": "idle",
+      "file": "Idle.png",
+      "spriteHeight": 190,
+      "spriteWidth": 231,
+      "frames": 4,
+      "load": "horizontal"
+    },
+    {
+      "id": 1,
+      "name": "attack1",
+      "file": "Attack1.png",
+      "spriteHeight": 190,
+      "spriteWidth": 231,
+      "frames": 6,
+      "load": "horizontal"
+    },
+    {
+      "id": 2,
+      "name": "attack2",
+      "file": "Attack2.png",
+      "spriteHeight": 190,
+      "spriteWidth": 231,
+      "frames": 8,
+      "load": "horizontal"
+    },
+    {
+      "id": 3,
+      "name": "hit",
+      "file": "Hit.png",
+      "spriteHeight": 190,
+      "spriteWidth": 231,
+      "frames": 4,
+      "load": "horizontal"
+    },
+    {
+      "id": 4,
+      "name": "death",
+      "file": "Death.png",
+      "spriteHeight": 190,
+      "spriteWidth": 231,
+      "frames": 7,
+      "load": "horizontal"
+    },
+    {
+      "id": 5,
+      "name": "run",
+      "file": "Run.png",
+      "spriteHeight": 190,
+      "spriteWidth": 231,
+      "frames": 8,
+      "load": "horizontal"
+    },
+  ]
+}
