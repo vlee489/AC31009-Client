@@ -1,7 +1,16 @@
 from .player import Player, PlayerStats
 from .gameData import GameData, HeroData
+from .characterSprite import CharacterSprite
 from .assets import *
 import pygame
+
+
+# This is used to tell the game what sprite to use for each HeroID by folder name of sprite
+sprite_data = {
+    1: CharacterSprite("assets/Sprites/HeroKnight"),
+    2: CharacterSprite("assets/Sprites/WizardPack"),
+    3: CharacterSprite("assets/Sprites/SpiritBoxer"),
+}
 
 
 class Game:
@@ -11,9 +20,9 @@ class Game:
 
     def __init__(self, room_code: str, app, hero_id: int):
         print(f"room code: {room_code}")
+        self._app = app  # Stores ref back to the app the launches the Game object
         self.room_code = room_code  # Stores the room-code that needs sent back to the server per move execution
         self.messages = []  # Stores all the messages coming in via websockets
-        self._app = app  # Stores ref back to the app the launches the Game object
         self.state = 0
         # 0 : Waiting on Response from server
         # 1 : Waiting on other player
@@ -28,6 +37,9 @@ class Game:
         self.player_num = -1  # 0 = A, 1 = B  States which player we are
         self.action = None  # Stores the last action carried out and sent to server
         self.winner = None  # Stores the winner at the end of the game
+        # Stores Sprites for player models
+        self.player_a_sprites = None
+        self.player_b_sprites = None
         # Attempt to join room
         self.send_ws_json({
             "action": "join",
@@ -342,10 +354,12 @@ class Game:
                     self.player_a = Player(player_a["playerUsername"], player_a["playerID"],
                                            self.game_data.heroes_by_id[f"{player_a['heroID']}"], player_a["HP"],
                                            player_a["shield"], player_a["speed"], player_a["speedLength"])
+                    self.player_a_sprites = sprite_data[player_a['heroID']]
                     player_b = message["status"]["playerB"]
                     self.player_b = Player(player_b["playerUsername"], player_b["playerID"],
                                            self.game_data.heroes_by_id[f"{player_b['heroID']}"], player_b["HP"],
                                            player_b["shield"], player_b["speed"], player_b["speedLength"])
+                    self.player_b_sprites = sprite_data[player_b['heroID']]
                     # Work out the player we are
                     if player_a["playerID"] == self._app.user.ID:
                         self.player_num = 0

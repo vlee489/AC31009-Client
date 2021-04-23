@@ -15,7 +15,8 @@ class SpriteSheet:
                     self.sprite_width = option['spriteWidth']
                     self.frames = option['frames']
                     self.load_mode = option['load']
-                    self.sprite_sheet = pygame.image.load(self.filename).convert()
+                    self.sprite_sheet = pygame.image.load(self.filename)
+                    return
             raise Exception("no sprite with ID")
 
     @property
