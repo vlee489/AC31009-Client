@@ -259,7 +259,7 @@ class App:
             elif self.state == 2:
                 self.game.main()
             # Sets FPS display
-            self.clock.tick(20)
+            self.clock.tick(60)
             regular_29_font.render_to(self.display, (0, 0), f"FPS: {round(self.clock.get_fps(), 1)}", black)
             pygame.display.update()
             yield

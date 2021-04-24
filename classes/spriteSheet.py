@@ -15,7 +15,19 @@ class SpriteSheet:
                     self.sprite_width = option['spriteWidth']
                     self.frames = option['frames']
                     self.load_mode = option['load']
+                    # Work out how much to scale the sprite by to make it nearly 400 tall
+                    self.multiple = 700 // self.sprite_height
+                    self.sprite_width = self.sprite_width * self.multiple
+                    self.sprite_height = self.sprite_height * self.multiple
                     self.sprite_sheet = pygame.image.load(self.filename)
+                    if self.load_mode == "horizontal":
+                        y = self.sprite_height
+                        x = self.sprite_width * self.frames
+                    else:
+                        x = self.sprite_width
+                        y = self.sprite_height * self.frames
+                    # Scale the sprite up
+                    self.sprite_sheet = pygame.transform.scale(self.sprite_sheet, (x, y))
                     return
             raise Exception("no sprite with ID")
 
@@ -26,24 +38,19 @@ class SpriteSheet:
         else:
             return False
 
+    @property
     def get_next_frame(self):
-        # setup sprite surface
-        sprite = pygame.Surface((self.sprite_width, self.sprite_height))
-        sprite.set_colorkey((0, 0, 0))
         # work out where to cut sprite out from
         if self.load_mode == "horizontal":
-            y = self.sprite_height
-            x = (self.next_frame - 0) * self.sprite_width
+            y = 0
+            x = (self.next_frame - 1) * self.sprite_width
         elif self.load_mode == "vertical":
-            x = self.sprite_width
-            y = (self.next_frame - 0) * self.sprite_height
+            x = 0
+            y = (self.next_frame - 1) * self.sprite_height
         else:
-            x = 100
-            y = 100
-        rect = pygame.Rect(x, y, self.sprite_width, self.sprite_height)
-        sprite.blit(self.sprite_sheet, (0, 0), rect)
+            raise Exception("Invalid load mode")
         # work out next frame and store
         self.next_frame += 1
         if self.next_frame > self.frames:
-            self.next_frame = 0
-        return sprite
+            self.next_frame = 1
+        return self.sprite_sheet.subsurface(pygame.Rect(x, y, self.sprite_width, self.sprite_height))

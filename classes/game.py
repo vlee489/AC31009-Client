@@ -1,6 +1,6 @@
 from .player import Player, PlayerStats
-from .gameData import GameData, HeroData
-from .characterSprite import CharacterSprite
+from .gameData import GameData, HeroData, MoveData
+from .characterSprite import CharacterSprite, AnimationSprite
 from .assets import *
 import pygame
 
@@ -50,6 +50,7 @@ class Game:
         })
         self.button_rect = []  # Used to store where the rects are input checking
         self.moves = []  # Holds all the moves that need to be played out
+        self.cg = []  # Holds all the character graphics that need to be played out still
 
     @property
     def display(self) -> pygame.display:
@@ -310,6 +311,37 @@ class Game:
             if return_to_rect.collidepoint(mouse_pos):
                 self._app.back_to_menu()
 
+    def move_processor(self):
+        """
+        Turns the moves into cg movements
+        :return: None
+        """
+        hero_move: MoveData
+        player_sprite : CharacterSprite
+        for x in range(len(self.moves)):
+            move = self.moves.pop(0)
+            if move["move"]["moveType"] == 0:
+                if move["player"] == 0:
+                    player_hero: HeroData = self.player_a.hero
+                    player_sprite = self.player_a_sprites
+                else:
+                    player_hero: HeroData = self.player_b.hero
+                    player_sprite = self.player_b_sprites
+                for hero_move in player_hero.moves:  # for moves hero has
+                    if hero_move.ID == move["move"]["id"]:  # if the move we're looking at and hero move are the same
+                        animation = player_sprite.animation_by_id[f"{hero_move.animation}"]
+                        self.cg.append(AnimationSprite(animation, move["player"]))
+
+    def cg_player(self):
+        """
+        Plays out all the character movement on the surface
+        :return: None
+        """
+        if len(self.cg) == 0:
+            self.display.blit(self.player_a_sprites.animation_by_id["0"].get_next_frame, (10, 200))
+            flip_b = pygame.transform.flip(self.player_b_sprites.animation_by_id["0"].get_next_frame, True, False)
+            self.display.blit(flip_b, (1000, 200))
+
     def main(self):
         """
         Runs the game event loop to display UI and process inputs
@@ -317,6 +349,8 @@ class Game:
         """
         if self.active:
             self.display_stats()
+            self.cg_player()
+            self.move_processor()
         # We don't display stuff for state 0 as it usually changes in a split second after server responds
         if not self.active:
             if self.winner is not None:

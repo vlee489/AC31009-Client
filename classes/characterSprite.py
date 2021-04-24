@@ -15,3 +15,9 @@ class CharacterSprite:
                 working_load = SpriteSheet(folder_location, animation['id'])
                 self.animations.append(working_load)
                 self.animation_by_id[f"{animation['id']}"] = working_load
+
+
+class AnimationSprite:
+    def __init__(self, animation: SpriteSheet, player: int):
+        self.animation = animation
+        self.player = player
