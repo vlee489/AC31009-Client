@@ -17,6 +17,8 @@ class Game:
     """
     Actually runs the game itself when in a room/lobby
     """
+    player_a_sprites: CharacterSprite
+    player_b_sprites: CharacterSprite
 
     def __init__(self, room_code: str, app, hero_id: int):
         print(f"room code: {room_code}")
@@ -51,6 +53,10 @@ class Game:
         self.button_rect = []  # Used to store where the rects are input checking
         self.moves = []  # Holds all the moves that need to be played out
         self.cg = []  # Holds all the character graphics that need to be played out still
+        # stores frames for each character
+        self.player_a_frame = None
+        self.player_b_frame = None
+        self.elapsed = pygame.time.get_ticks()
 
     @property
     def display(self) -> pygame.display:
@@ -337,10 +343,33 @@ class Game:
         Plays out all the character movement on the surface
         :return: None
         """
-        if len(self.cg) == 0:
-            self.display.blit(self.player_a_sprites.animation_by_id["0"].get_next_frame, (10, 200))
-            flip_b = pygame.transform.flip(self.player_b_sprites.animation_by_id["0"].get_next_frame, True, False)
-            self.display.blit(flip_b, (1000, 200))
+        # Only run animations ever 1/10 second
+        if (pygame.time.get_ticks() - self.elapsed) > 100:
+            self.elapsed = pygame.time.get_ticks()
+            self.player_a_frame = None
+            self.player_b_frame = None
+            if len(self.cg) > 0:
+                move_cg: AnimationSprite = self.cg[0]
+                if move_cg.player == 0:
+                    self.player_a_frame = move_cg.animation.get_next_frame
+                elif move_cg.player == 1:
+                    self.player_b_frame = move_cg.animation.get_next_frame
+                # if played through, remove frame from cg list
+                if move_cg.animation.animation_played_through:
+                    self.cg.pop(0)
+        # if no animation is assigned, set the next frame of the idle animation
+        if self.player_a_frame is None:
+            self.player_a_frame = self.player_a_sprites.animation_by_id["0"].get_next_frame
+        if self.player_b_frame is None:
+            self.player_b_frame = self.player_b_sprites.animation_by_id["0"].get_next_frame
+        # Calculate where sprite should go on window
+        a_y_loc = 830 - self.player_a_frame.get_height()
+        b_y_loc = 830 - self.player_b_frame.get_height()
+        b_x_loc = 1920 - (10 + self.player_b_frame.get_width())
+        # Display frame
+        self.display.blit(self.player_a_frame, (10, a_y_loc))
+        flip_b = pygame.transform.flip(self.player_b_frame, True, False)  # Flip Player B
+        self.display.blit(flip_b, (b_x_loc, b_y_loc))
 
     def main(self):
         """

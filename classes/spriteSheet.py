@@ -16,7 +16,7 @@ class SpriteSheet:
                     self.frames = option['frames']
                     self.load_mode = option['load']
                     # Work out how much to scale the sprite by to make it nearly 400 tall
-                    self.multiple = 700 // self.sprite_height
+                    self.multiple = 600 // self.sprite_height
                     self.sprite_width = self.sprite_width * self.multiple
                     self.sprite_height = self.sprite_height * self.multiple
                     self.sprite_sheet = pygame.image.load(self.filename)
