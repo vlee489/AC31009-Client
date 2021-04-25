@@ -11,6 +11,8 @@ class PlayerStats:
         self.shield = shield
         self.speed = speed
         self.speed_length = speed_length
+        self.previous_hp = HP
+        self.previous_shield = shield
 
     def set_stats(self, HP: int, shield: int, speed: int, speed_length: int):
         """
@@ -25,6 +27,18 @@ class PlayerStats:
         self.shield = shield
         self.speed = speed
         self.speed_length = speed_length
+
+    @property
+    def get_hp_diff(self):
+        diff = self.previous_hp - self.HP
+        self.previous_hp = self.HP
+        return diff
+
+    @property
+    def get_shield_diff(self):
+        diff = self.previous_shield - self.shield
+        self.previous_shield = self.shield
+        return diff
 
 
 class Player:

@@ -4,6 +4,15 @@
   "link": "https://luizmelo.itch.io/wizard-pack",
   "sprites": [
     {
+      "id": -1,
+      "name": "hit",
+      "file": "Hit.png",
+      "spriteHeight": 190,
+      "spriteWidth": 231,
+      "frames": 4,
+      "load": "horizontal"
+    },
+    {
       "id": 0,
       "name": "idle",
       "file": "Idle.png",
@@ -32,11 +41,11 @@
     },
     {
       "id": 3,
-      "name": "hit",
-      "file": "Hit.png",
+      "name": "fall",
+      "file": "Fall.png",
       "spriteHeight": 190,
       "spriteWidth": 231,
-      "frames": 4,
+      "frames": 2,
       "load": "horizontal"
     },
     {

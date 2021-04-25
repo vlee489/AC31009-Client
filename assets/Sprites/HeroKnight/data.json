@@ -4,6 +4,15 @@
   "link": "https://luizmelo.itch.io/hero-knight",
   "sprites": [
     {
+      "id": -1,
+      "name": "damage",
+      "file": "Take Hit.png",
+      "spriteHeight": 180,
+      "spriteWidth": 231,
+      "frames": 4,
+      "load": "horizontal"
+    },
+    {
       "id": 0,
       "name": "idle",
       "file": "Idle.png",

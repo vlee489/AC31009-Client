@@ -17,9 +17,6 @@ class Game:
     """
     Actually runs the game itself when in a room/lobby
     """
-    player_a_sprites: CharacterSprite
-    player_b_sprites: CharacterSprite
-
     def __init__(self, room_code: str, app, hero_id: int):
         print(f"room code: {room_code}")
         self._app = app  # Stores ref back to the app the launches the Game object
@@ -323,20 +320,30 @@ class Game:
         :return: None
         """
         hero_move: MoveData
-        player_sprite : CharacterSprite
+        player_sprite: CharacterSprite
+        opponent = -1
+        opponent_animation = None
         for x in range(len(self.moves)):
             move = self.moves.pop(0)
             if move["move"]["moveType"] == 0:
                 if move["player"] == 0:
-                    player_hero: HeroData = self.player_a.hero
-                    player_sprite = self.player_a_sprites
+                    move_player_hero: HeroData = self.player_a.hero
+                    move_player_sprite = self.player_a_sprites
+                    if self.player_b.stats.get_hp_diff > 0:  # If player takes a hit
+                        opponent_animation = self.player_b_sprites.animation_by_id[f"-1"]  # Get damage animation
+                        opponent = 1
                 else:
-                    player_hero: HeroData = self.player_b.hero
-                    player_sprite = self.player_b_sprites
-                for hero_move in player_hero.moves:  # for moves hero has
+                    move_player_hero: HeroData = self.player_b.hero
+                    move_player_sprite = self.player_b_sprites
+                    if self.player_a.stats.get_hp_diff > 0:  # If player takes a hit
+                        opponent_animation = self.player_a_sprites.animation_by_id[f"-1"]  # Get damage animation
+                        opponent = 0
+                for hero_move in move_player_hero.moves:  # for moves hero has
                     if hero_move.ID == move["move"]["id"]:  # if the move we're looking at and hero move are the same
-                        animation = player_sprite.animation_by_id[f"{hero_move.animation}"]
+                        animation = move_player_sprite.animation_by_id[f"{hero_move.animation}"]
                         self.cg.append(AnimationSprite(animation, move["player"]))
+                        if opponent_animation is not None:
+                            self.cg.append(AnimationSprite(opponent_animation, opponent))
 
     def cg_player(self):
         """

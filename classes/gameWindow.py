@@ -2,7 +2,6 @@
 Holds all the code to run the game itself
 """
 import pygame
-import pygame.freetype
 from .bootstraper import BootStrap
 from .assets import *
 from twisted.internet import reactor

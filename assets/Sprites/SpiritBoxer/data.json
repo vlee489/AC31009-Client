@@ -4,6 +4,15 @@
   "link": "https://penusbmic.itch.io/characterpack1",
   "sprites": [
     {
+      "id": -1,
+      "name": "Damage",
+      "file": "Damaged & Death.png",
+      "spriteHeight": 44,
+      "spriteWidth": 137,
+      "frames": 4,
+      "load": "vertical"
+    },
+    {
       "id": 0,
       "name": "idle",
       "file": "Idle.png",
