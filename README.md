@@ -24,3 +24,30 @@ project setup.*
 
 You can use pyInstalled to create an executable for the game. To do this you can run `pyinstaller main.spec` from the 
 command line linked to venv.
+
+## Credits
+
+### Sprites
+The Sprites used are the follow. These are under their agreements listed on their Itch.io pages for these assets
+
+- [Hero Knight by luizmelo](https://luizmelo.itch.io/hero-knight) Licenced under CC0
+- [Wizard Pack by luizmelo](https://luizmelo.itch.io/wizard-pack) Licenced under CC0
+- [Spirit Boxer from Sci-fi Character Pack 1 by https://penusbmic.itch.io/characterpack1](https://penusbmic.itch.io/characterpack1)
+  
+### Font
+Fonts used
+
+- [Montserrat by Julieta Ulanovsky, Sol Matas, Juan Pablo del Peral, Jacques Le Bailly](https://fonts.google.com/specimen/Montserrat)
+, This font is licenced under the Open Font Licence.
+  
+## Packages
+
+This project used a number of packages for different functions, and can be found on PyPi
+
+- `Pygame`: Game engine, displays stuff using SDL2
+- `requests`: HTTP/S requests
+- `pysimplegui`: Used for login UI
+- `autobahn` & `twisted`: Handles Websockets connection and concurrent operation alongside PyGame
+- `ujson`: for autobahn for more efficient json parsing
+- `wsaccel`: Websocket accelerator
+- `pyinstaller`: Creates executable file
