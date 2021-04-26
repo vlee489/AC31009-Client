@@ -3,6 +3,8 @@ import classes
 import functions
 from twisted.internet import reactor
 from twisted.internet.task import Cooperator
+import sys
+import os
 
 # Consts
 version = "0.0.1"  # Game Version for gameData matching
@@ -10,6 +12,11 @@ server = "localhost:4000"  # Location of server with port
 port = 4000  # Port server is running on Used for Twisted Reactor
 # Global Var
 user = classes.BootStrap(server, version, port)
+
+# To get pyInstaller working
+# https://stackoverflow.com/questions/28033003/pyinstaller-with-pygame
+if getattr(sys, 'frozen', False):
+    os.chdir(sys._MEIPASS)
 
 
 def start_up():
