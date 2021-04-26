@@ -1,10 +1,7 @@
 import PySimpleGUI as sg
 import classes
 import functions
-import logging
-import sys
 from twisted.internet import reactor
-from twisted.python import log
 from twisted.internet.task import Cooperator
 
 # Consts
