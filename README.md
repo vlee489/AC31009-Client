@@ -32,7 +32,7 @@ The Sprites used are the follow. These are under their agreements listed on thei
 
 - [Hero Knight by luizmelo](https://luizmelo.itch.io/hero-knight) Licenced under CC0
 - [Wizard Pack by luizmelo](https://luizmelo.itch.io/wizard-pack) Licenced under CC0
-- [Spirit Boxer from Sci-fi Character Pack 1 by https://penusbmic.itch.io/characterpack1](https://penusbmic.itch.io/characterpack1)
+- [Spirit Boxer from Sci-fi Character Pack 1 by penusbmic](https://penusbmic.itch.io/characterpack1)
   
 ### Font
 Fonts used
