@@ -20,3 +20,7 @@ project setup.*
    top of the file on lines 12 and 13.
 4. Launch the client/game with `python main.py`
 
+## Building Executable
+
+You can use pyInstalled to create an executable for the game. To do this you can run `pyinstaller main.spec` from the 
+command line linked to venv.
