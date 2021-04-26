@@ -1,16 +1,8 @@
 from .player import Player, PlayerStats
 from .gameData import GameData, HeroData, MoveData
-from .characterSprite import CharacterSprite, AnimationSprite
+from .characterSprite import AnimationSprite, CharacterSprite
 from .assets import *
 import pygame
-
-
-# This is used to tell the game what sprite to use for each HeroID by folder name of sprite
-sprite_data = {
-    1: CharacterSprite("assets/Sprites/HeroKnight"),
-    2: CharacterSprite("assets/Sprites/WizardPack"),
-    3: CharacterSprite("assets/Sprites/SpiritBoxer"),
-}
 
 
 class Game:
@@ -37,8 +29,15 @@ class Game:
         self.action = None  # Stores the last action carried out and sent to server
         self.winner = None  # Stores the winner at the end of the game
         # Stores Sprites for player models
-        self.player_a_sprites = None
-        self.player_b_sprites = None
+        self.button_rect = []  # Used to store where the rects are input checking
+        self.moves = []  # Holds all the moves that need to be played out
+        self.cg = []  # Holds all the character graphics that need to be played out still
+        # stores frames for each character
+        self.player_a_frame = None
+        self.player_b_frame = None
+        self.elapsed = pygame.time.get_ticks()  # used to set animation speed checks
+        self.process_ending = False
+        self.shown_ending = False
         # Attempt to join room
         self.send_ws_json({
             "action": "join",
@@ -47,13 +46,6 @@ class Game:
                 "id": hero_id
             }
         })
-        self.button_rect = []  # Used to store where the rects are input checking
-        self.moves = []  # Holds all the moves that need to be played out
-        self.cg = []  # Holds all the character graphics that need to be played out still
-        # stores frames for each character
-        self.player_a_frame = None
-        self.player_b_frame = None
-        self.elapsed = pygame.time.get_ticks()
 
     @property
     def display(self) -> pygame.display:
@@ -92,6 +84,14 @@ class Game:
             return self.player_a.stats
         else:
             return self.player_b.stats
+
+    @property
+    def player_a_sprites(self) -> CharacterSprite:
+        return self.player_a.sprite
+
+    @property
+    def player_b_sprites(self) -> CharacterSprite:
+        return self.player_b.sprite
 
     def send_ws_json(self, message: dict):
         """
@@ -364,6 +364,18 @@ class Game:
                 # if played through, remove frame from cg list
                 if move_cg.animation.animation_played_through:
                     self.cg.pop(0)
+        # if no moves to be shown and end of the game and death animation hasn't been shown
+        if (self.winner is not None) and (not self.shown_ending) and (len(self.cg) == 0):
+            if self.winner == 0:
+                loser_animation_id = self.player_b.hero.death_animation
+                self.player_b_frame = self.player_b_sprites.animation_by_id[ f"{loser_animation_id}"].get_next_frame
+                if self.player_b_sprites.animation_by_id[f"{loser_animation_id}"].animation_played_through:
+                    self.shown_ending = True
+            if self.winner == 1:
+                loser_animation_id = self.player_a.hero.death_animation
+                self.player_a_frame = self.player_a_sprites.animation_by_id[f"{loser_animation_id}"].get_next_frame
+                if self.player_a_sprites.animation_by_id[f"{loser_animation_id}"].animation_played_through:
+                    self.shown_ending = True
         # if no animation is assigned, set the next frame of the idle animation
         if self.player_a_frame is None:
             self.player_a_frame = self.player_a_sprites.animation_by_id["0"].get_next_frame
@@ -383,10 +395,11 @@ class Game:
         Runs the game event loop to display UI and process inputs
         :return: None
         """
-        if self.active:
-            self.display_stats()
+        if (self.active or self.winner is not None) and not self.shown_ending:
             self.cg_player()
             self.move_processor()
+        if self.active:
+            self.display_stats()
         # We don't display stuff for state 0 as it usually changes in a split second after server responds
         if not self.active:
             if self.winner is not None:
@@ -403,7 +416,6 @@ class Game:
             self.display_items()
         elif self.state == 5:
             self.state = 2
-            # TODO, play out moves made by players
         # Process messages in queue
         for x in range(len(self.messages)):
             message = self.messages.pop(0)  # first message in queue
@@ -423,13 +435,13 @@ class Game:
                     player_a = message["status"]["playerA"]
                     self.player_a = Player(player_a["playerUsername"], player_a["playerID"],
                                            self.game_data.heroes_by_id[f"{player_a['heroID']}"], player_a["HP"],
-                                           player_a["shield"], player_a["speed"], player_a["speedLength"])
-                    self.player_a_sprites = sprite_data[player_a['heroID']]
+                                           player_a["shield"], player_a["speed"], player_a["speedLength"],
+                                           sprite_data[player_a['heroID']])
                     player_b = message["status"]["playerB"]
                     self.player_b = Player(player_b["playerUsername"], player_b["playerID"],
                                            self.game_data.heroes_by_id[f"{player_b['heroID']}"], player_b["HP"],
-                                           player_b["shield"], player_b["speed"], player_b["speedLength"])
-                    self.player_b_sprites = sprite_data[player_b['heroID']]
+                                           player_b["shield"], player_b["speed"], player_b["speedLength"],
+                                           sprite_data[player_b['heroID']])
                     # Work out the player we are
                     if player_a["playerID"] == self._app.user.ID:
                         self.player_num = 0

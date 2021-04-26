@@ -1,4 +1,5 @@
 from .gameData import HeroData
+from .characterSprite import CharacterSprite
 
 
 class PlayerStats:
@@ -47,9 +48,10 @@ class Player:
     """
     hero: HeroData
 
-    def __init__(self, username: str, user_id: str, hero: HeroData,
-                 hp: int, shield: int, speed: int, speed_length: int):
+    def __init__(self, username: str, user_id: str, hero: HeroData,  hp: int, shield: int,
+                 speed: int, speed_length: int, char_sprite: CharacterSprite):
         self.username = username
         self.user_id = user_id
         self.hero = hero
         self.stats = PlayerStats(hp, shield, speed, speed_length)
+        self.sprite = char_sprite

@@ -2,6 +2,7 @@
 Holds random assets that are used such as colours
 """
 from pygame import Color, Rect, freetype
+from .characterSprite import CharacterSprite
 
 # Colours
 light_grey = Color('#E9E9E9')
@@ -43,3 +44,10 @@ shield_rect = Rect(990, 890, 350, 120)
 skip_rect = Rect(1394, 890, 350, 120)
 
 back_button_rect = Rect(101, 890, 120, 120)
+
+# This is used to tell the game what sprite to use for each HeroID by folder name of sprite
+sprite_data = {
+    1: CharacterSprite("assets/Sprites/HeroKnight"),
+    2: CharacterSprite("assets/Sprites/WizardPack"),
+    3: CharacterSprite("assets/Sprites/SpiritBoxer"),
+}
