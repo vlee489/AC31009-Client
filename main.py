@@ -8,10 +8,11 @@ import os
 
 # Consts
 version = "0.0.1"  # Game Version for gameData matching
-server = "localhost:4000"  # Location of server with port
+server = "node1.vlee.me.uk:4000"  # Location of server with port
 port = 4000  # Port server is running on Used for Twisted Reactor
+secure = True
 # Global Var
-user = classes.BootStrap(server, version, port)
+user = classes.BootStrap(server, version, port, secure)
 
 # To get pyInstaller working
 # https://stackoverflow.com/questions/28033003/pyinstaller-with-pygame
@@ -50,7 +51,8 @@ def login_gui():
                 if create_event == "Create Account":
                     # Attempt to create new account
                     response, message = functions.create_account(server, create_values[0], create_values[1],
-                                                                 create_values[2], create_values[3], create_values[4])
+                                                                 create_values[2], create_values[3], create_values[4],
+                                                                 secure)
                     if response:
                         # If we create the account, send back to login window
                         create_account_window.close()

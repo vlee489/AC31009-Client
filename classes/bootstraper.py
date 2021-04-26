@@ -32,7 +32,7 @@ class BootStrap:
     Handles all storage and tasks for communicating with the server's REST api
     """
 
-    def __init__(self, server: str, version: str, port: int):
+    def __init__(self, server: str, version: str, port: int, secure: bool):
         """
         Default constructor
         :param server: server link
@@ -42,6 +42,11 @@ class BootStrap:
         self.server = server
         self.version = version
         self.port = port
+        self.secure = secure
+        if secure:
+            self.protocol = "https"
+        else:
+            self.protocol = "http"
         print(self.dataDir)
         if not os.path.isfile(self.dataDir):
             self.__createStorage__()
@@ -61,7 +66,7 @@ class BootStrap:
         Creates the local storage file for the game
         :return: None
         """
-        game_data_request = requests.get(f"http://{self.server}/gameData")
+        game_data_request = requests.get(f"{self.protocol}://{self.server}/gameData")
         if game_data_request.status_code != 200:
             raise ConnectionError("Unable to get server game Data")
         else:
@@ -83,7 +88,7 @@ class BootStrap:
         Checks the local game data file with the one on the server
         :return: None
         """
-        game_data_request = requests.get(f"http://{self.server}/gameData")
+        game_data_request = requests.get(f"{self.protocol}://{self.server}/gameData")
         if game_data_request.status_code != 200:
             raise ConnectionError("Unable to get server game Data")
         game_data = game_data_request.json()
@@ -113,7 +118,7 @@ class BootStrap:
         :return: If token is valid or not
         """
         if self.token:
-            response = requests.post(f"http://{self.server}/validateToken", data={
+            response = requests.post(f"{self.protocol}://{self.server}/validateToken", data={
                 "token": self.token,
             })
             if response.status_code == 200 and response.json()["valid"]:
@@ -132,7 +137,7 @@ class BootStrap:
         self.token = ""
         self.ID = ""
         self.username = ""
-        response = requests.post(f"http://{self.server}/login", data={
+        response = requests.post(f"{self.protocol}://{self.server}/login", data={
             "email": email,
             "password": password
         })
@@ -154,7 +159,7 @@ class BootStrap:
         """
         if not self.token:
             return False
-        response = requests.get(f"http://{self.server}/profile", headers={
+        response = requests.get(f"{self.protocol}://{self.server}/profile", headers={
             "Authorization": self.token
         })
         if response.status_code != 200:
@@ -168,7 +173,7 @@ class BootStrap:
         :param public: Public Lobby
         :return: False or roomCode
         """
-        response = requests.post(f"http://{self.server}/openLobby", data={
+        response = requests.post(f"{self.protocol}://{self.server}/openLobby", data={
             "open": public,
         }, headers={
             "Authorization": self.token
@@ -185,7 +190,7 @@ class BootStrap:
         :param room_code: room code to check
         :return: if room is open and ready to be entered
         """
-        response = requests.post(f"http://{self.server}/checkRoomCode", data={
+        response = requests.post(f"{self.protocol}://{self.server}/checkRoomCode", data={
             "roomCode": room_code,
         }, headers={
             "Authorization": self.token

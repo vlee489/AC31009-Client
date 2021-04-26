@@ -9,6 +9,8 @@ from .game import Game
 from .ws import URPGClientFactory
 from .gameData import GameData
 import json
+from twisted.internet import ssl
+from autobahn.twisted.websocket import connectWS
 
 
 class App:
@@ -32,10 +34,11 @@ class App:
         print(pygame.display.Info())
         self.open_websocket()
 
+
     @property
     def websocket(self):
         if self._factory:
-            return self._factory._protocol
+            return self._factory.client_protocol
         else:
             return None
 
@@ -50,8 +53,14 @@ class App:
         exit(0)
 
     def open_websocket(self):
-        self._factory = URPGClientFactory(self.user.server, self, self.user.token)
-        reactor.connectTCP('127.0.0.1', self.user.port, self._factory)
+        self._factory = URPGClientFactory(self.user.server, self, self.user.token, self.user.secure)
+        # Checks if connection is secure
+        if self._factory.isSecure:
+            context_factory = ssl.ClientContextFactory()
+        else:
+            context_factory = None
+        connectWS(self._factory, context_factory)  # Starts the Websocket connection
+        reactor.connectTCP('127.0.0.1', self.user.port, self._factory)  # Start reactor
 
     def close_websocket(self):
         if self.websocket:
@@ -224,6 +233,8 @@ class App:
         Runs the pygame window
         :return: None
         """
+        # Note: You see so many if/elif statements as Python doesn't have switch/case statements, yes there's dict
+        # but they can get messy with variables
         while self._run:
             for event in pygame.event.get():
                 if event.type == pygame.MOUSEBUTTONDOWN:

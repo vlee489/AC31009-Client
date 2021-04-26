@@ -4,8 +4,9 @@ Handles all the websocket stuff with Twisted & autobahn extended classes
 This is based off the Websocket Pygame demo by globophobe
 https://github.com/globophobe/pygame-websockets
 """
+from twisted.internet import ssl
 from autobahn.twisted.websocket import (
-    WebSocketClientProtocol, WebSocketClientFactory
+    WebSocketClientProtocol, WebSocketClientFactory, connectWS
 )
 import json
 from .game import Game
@@ -18,7 +19,7 @@ class URPGClientProtocol(WebSocketClientProtocol):
         :return: None
         """
         print('WebSocket connection open.')
-        self.factory._protocol = self  # Set factory protocol as a ref back to itself
+        self.factory.client_protocol = self  # Set factory protocol as a ref back to itself
 
     def onMessage(self, payload, is_binary):
         """
@@ -44,21 +45,27 @@ class URPGClientProtocol(WebSocketClientProtocol):
         :return: None
         """
         print('WebSocket connection closed: {0}'.format(reason))
-        self.factory._protocol = None
+        self.factory.client_protocol = None
 
 
 class URPGClientFactory(WebSocketClientFactory):
     protocol = URPGClientProtocol
 
-    def __init__(self, url: str, app, token: str):
+    def __init__(self, url: str, app, token: str, secure: bool):
         """
         Connect to the websocket
         :param url: URL to connect to
         :param app: Ref back to object that launched the WS
         :param token: Client token to to WS authentication
+        :pram secure: is the server connection should be secure
         """
-        WebSocketClientFactory.__init__(self, f"ws://{url}", headers={
+        if secure:
+            protocol = "wss"
+        else:
+            protocol = "ws"
+        WebSocketClientFactory.__init__(self, f"{protocol}://{url}", headers={
             "authorization": token
         })
+
         self.app = app
-        self._protocol = None
+        self.client_protocol = None
