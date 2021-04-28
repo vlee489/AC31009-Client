@@ -18,6 +18,7 @@ class CharacterSprite:
 
 
 class AnimationSprite:
-    def __init__(self, animation: SpriteSheet, player: int):
+    def __init__(self, animation: SpriteSheet, player: int, audio: int):
         self.animation = animation
         self.player = player
+        self.audio = audio

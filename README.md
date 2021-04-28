@@ -43,15 +43,13 @@ Fonts used
 ### Icons
 
 - [Back](https://fontawesome.com/icons/arrow-circle-left?style=solid) Font Awesome *Creative Commons Attribution 4.0 International license*
+
+### Sounds
+
+- [MixKit](https://mixkit.co/): for sounds from MixKit used under their licence [here](https://mixkit.co/license/#sfxFree)
+- [Sound FX Pack 1 by edwardcufaude](https://edwardcufaude.itch.io/soundfxpack1): for sounds not starting with mixkit used under their licence
   
 ## Packages
 
-This project used a number of packages for different functions, and can be found on PyPi
-
-- `Pygame`: Game engine, displays stuff using SDL2
-- `requests`: HTTP/S requests
-- `pysimplegui`: Used for login UI
-- `autobahn` & `twisted`: Handles Websockets connection and concurrent operation alongside PyGame
-- `ujson`: for autobahn for more efficient json parsing
-- `wsaccel`: Websocket accelerator
-- `pyinstaller`: Creates executable file
+This project used a number of packages for different functions listed in the `requirements.txt` file, 
+and can be found on PyPi for more info.

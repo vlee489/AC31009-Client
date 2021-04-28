@@ -1,8 +1,9 @@
 """
 Holds random assets that are used such as colours
 """
-from pygame import Color, Rect, freetype, image, transform
+from pygame import Color, Rect, freetype, image, transform, mixer
 from .characterSprite import CharacterSprite
+from .audioLoader import AudioLoader
 
 # Colours
 light_grey = Color('#E9E9E9')
@@ -56,4 +57,12 @@ sprite_data = {
     1: CharacterSprite("assets/Sprites/HeroKnight"),
     2: CharacterSprite("assets/Sprites/WizardPack"),
     3: CharacterSprite("assets/Sprites/SpiritBoxer"),
+}
+
+# Holds all the audio for each character
+mixer.init()  # Start pygame mixer
+audio_data = {
+    1: AudioLoader("assets/Sounds/HeroKnight"),
+    2: AudioLoader("assets/Sounds/WizardPack"),
+    3: AudioLoader("assets/Sounds/SpiritBoxer"),
 }

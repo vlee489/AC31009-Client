@@ -1,0 +1,16 @@
+{
+  "moves": [
+    {
+      "id": 1,
+      "file": "Simple Explosion 001.wav"
+    },
+    {
+      "id": 2,
+      "file": "Simple Explosion 002.wav"
+    },
+    {
+      "id": 3,
+      "file": "Simple Explosion 003.wav"
+    }
+  ]
+}

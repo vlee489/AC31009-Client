@@ -36,6 +36,9 @@ class Game:
         self.player_a_frame = None
         self.player_b_frame = None
         self.shown_ending = False
+        # To stop audio repeating for move
+        self.player_a_audio = False
+        self.player_b_audio = False
         # Attempt to join room
         self.send_ws_json({
             "action": "join",
@@ -347,17 +350,17 @@ class Game:
                 for hero_move in move_player_hero.moves:  # for moves hero has
                     if hero_move.ID == move["move"]["id"]:  # if the move we're looking at and hero move are the same
                         animation = move_player_sprite.animation_by_id[f"{hero_move.animation}"]
-                        self.cg.append(AnimationSprite(animation, move["player"]))
+                        self.cg.append(AnimationSprite(animation, move["player"], hero_move.animation))
                         if opponent_animation is not None:
-                            self.cg.append(AnimationSprite(opponent_animation, opponent))
+                            self.cg.append(AnimationSprite(opponent_animation, opponent, -100))
 
     def cg_player(self):
         """
         Plays out all the character movement on the surface
         :return: None
         """
-        # Only run animations ever 1/10 second
-        if (pygame.time.get_ticks() - self._app.elapsed) > 100:
+        # Only run animations ever 150ms
+        if (pygame.time.get_ticks() - self._app.elapsed) > 150:
             self._app.elapsed = pygame.time.get_ticks()
             self.player_a_frame = None
             self.player_b_frame = None
@@ -365,8 +368,14 @@ class Game:
                 move_cg: AnimationSprite = self.cg[0]
                 if move_cg.player == 0:
                     self.player_a_frame = move_cg.animation.get_next_frame
+                    if move_cg.audio > -100 and not self.player_a_audio:  # has audio to play and not been played
+                        self.player_a_audio = True
+                        audio_data[self.player_a.hero.ID].audio_by_id[f"{move_cg.audio}"].play()
                 elif move_cg.player == 1:
                     self.player_b_frame = move_cg.animation.get_next_frame
+                    if move_cg.audio > -100 and not self.player_b_audio:  # has audio to play and not been played
+                        self.player_b_audio = True
+                        audio_data[self.player_b.hero.ID].audio_by_id[f"{move_cg.audio}"].play()
                 # if played through, remove frame from cg list
                 if move_cg.animation.animation_played_through:
                     self.cg.pop(0)
@@ -467,4 +476,6 @@ class Game:
                     self.active = message['active']
                     if message["winner"] != "None":
                         self.winner = message["winner"]
+                    self.player_a_audio = False
+                    self.player_b_audio = False
                     self.state = 5
