@@ -40,6 +40,10 @@ Fonts used
 - [Montserrat by Julieta Ulanovsky, Sol Matas, Juan Pablo del Peral, Jacques Le Bailly](https://fonts.google.com/specimen/Montserrat)
 , This font is licenced under the Open Font Licence.
   
+### Icons
+
+- [Back](https://fontawesome.com/icons/arrow-circle-left?style=solid) Font Awesome *Creative Commons Attribution 4.0 International license*
+  
 ## Packages
 
 This project used a number of packages for different functions, and can be found on PyPi

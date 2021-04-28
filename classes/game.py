@@ -215,6 +215,7 @@ class Game:
         """
         pygame.draw.rect(self.display, light_grey, back_button_rect)
         pygame.draw.rect(self.display, black, back_button_rect, 1)
+        self.display.blit(back_icon, (119, 908))
 
     def _display_button_rect(self, name: str, rect: pygame.Rect, start_x: int):
         """

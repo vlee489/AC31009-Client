@@ -22,6 +22,10 @@ bold_36_font = freetype.Font("assets/Montserrat/Montserrat-Bold.ttf", 36)
 regular_48_font = freetype.Font("assets/Montserrat/Montserrat-Regular.ttf", 48)
 regular_29_font = freetype.Font("assets/Montserrat/Montserrat-Regular.ttf", 29)
 regular_18_font = freetype.Font("assets/Montserrat/Montserrat-Regular.ttf", 18)
+
+# Icons
+back_icon = transform.scale(image.load("assets/icons/back.png"), (85, 85))
+
 # Rects
 # ==============
 return_to_rect = Rect(48, 944, 330, 100)
