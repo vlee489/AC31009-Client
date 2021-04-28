@@ -164,13 +164,13 @@ class App:
         # Buttons
         pygame.draw.rect(self.display, light_grey, hero_1_rect)
         pygame.draw.rect(self.display, black, hero_1_rect, 1)
-        bold_48_font.render_to(self.display, (297, 915), "Gatron", black)
+        bold_48_font.render_to(self.display, (277, 915), "Gatron", black)
         pygame.draw.rect(self.display, light_grey, hero_2_rect)
         pygame.draw.rect(self.display, black, hero_2_rect, 1)
-        bold_48_font.render_to(self.display, (721, 915), "Sova", black)
+        bold_48_font.render_to(self.display, (660, 915), "Maxmus", black)
         pygame.draw.rect(self.display, light_grey, hero_3_rect)
         pygame.draw.rect(self.display, black, hero_3_rect, 1)
-        bold_48_font.render_to(self.display, (1101, 915), "Ranger", black)
+        bold_48_font.render_to(self.display, (1101, 915), "Boxer", black)
 
     def hero_select_selector(self, mouse_pos):
         hero = None
