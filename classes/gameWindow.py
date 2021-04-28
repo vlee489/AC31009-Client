@@ -177,6 +177,15 @@ class App:
         pygame.draw.rect(self.display, light_grey, hero_3_rect)
         pygame.draw.rect(self.display, black, hero_3_rect, 1)
         bold_48_font.render_to(self.display, (1101, 915), "Boxer", black)
+        # Show heroes on screen above buttons
+        if ((pygame.time.get_ticks() - self.elapsed) > 100) or self.frame is None:
+            self.elapsed = pygame.time.get_ticks()
+            self.frame = pygame.Surface((1920, 1080), pygame.SRCALPHA, 32)
+            self.frame.blit(sprite_data[1].animation_by_id["0"].get_next_frame, (15, 380))
+            self.frame.blit(sprite_data[2].animation_by_id["0"].get_next_frame, (450, 300))
+            self.frame.blit(sprite_data[3].animation_by_id["0"].get_next_frame, (960, 250))
+            self.frame = self.frame.convert_alpha()
+        self.display.blit(self.frame, (0, 0))
 
     def hero_select_selector(self, mouse_pos):
         hero = None
