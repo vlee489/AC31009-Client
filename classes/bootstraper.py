@@ -56,6 +56,7 @@ class BootStrap:
             self.username = data.get("username")
             self.ID = data.get("ID")
             self.game_data = data.get("gameData")
+            self.hero = data.get("hero")
         self.check_game_data()
         # Run game version checks
         if self.version != self.game_data['clientSupport']:
@@ -77,6 +78,7 @@ class BootStrap:
             "token": "",
             "username": "",
             "ID": "",
+            "hero": 1
         }
         if not os.path.isdir(get_user_data_dir('AC31009-Untitled-RPG')):
             os.mkdir(get_user_data_dir('AC31009-Untitled-RPG'))
@@ -108,6 +110,7 @@ class BootStrap:
             "token": self.token,
             "username": self.username,
             "ID": self.ID,
+            "hero": self.hero
         }
         with open(self.dataDir, 'w+') as dataFile:
             json.dump(settings, dataFile, indent=4)
@@ -201,4 +204,13 @@ class BootStrap:
             return False
         else:
             raise Exception("Remote Server Error")
+
+    def update_hero(self, hero_id: int):
+        """
+        Update hero on file
+        :param hero_id: id of hero
+        :return: None
+        """
+        self.hero = hero_id
+        self.update_storage_file()
 
