@@ -32,11 +32,9 @@ class Game:
         self.button_rect = []  # Used to store where the rects are input checking
         self.moves = []  # Holds all the moves that need to be played out
         self.cg = []  # Holds all the character graphics that need to be played out still
-        # stores frames for each character
+        # stores frames for each character, so they can be displayed again
         self.player_a_frame = None
         self.player_b_frame = None
-        self.elapsed = pygame.time.get_ticks()  # used to set animation speed checks
-        self.process_ending = False
         self.shown_ending = False
         # Attempt to join room
         self.send_ws_json({
@@ -119,12 +117,19 @@ class Game:
         player_b_hp_width = int((self.player_b.stats.HP / self.player_b.hero.HP) * 500)
         # Draw Player A Health
         bold_36_font.render_to(self.display, (22, 34), "HP", black)
-        pygame.draw.rect(self.display, green, (86, 30, player_a_hp_width, 35))
+        pygame.draw.rect(self.display, (green if (self.player_a.stats.HP / self.player_a.hero.HP) > 0.5 else damage_red)
+                         , (86, 30, player_a_hp_width, 35))
         pygame.draw.rect(self.display, black, (86, 30, 500, 35), 1)
+        regular_20_font.render_to(self.display, (100, 36), f"{self.player_a.stats.HP}/{self.player_a.hero.HP}", black)
         # Draw Player B Health
         bold_36_font.render_to(self.display, (1848, 34), "HP", black)
-        pygame.draw.rect(self.display, green, ((1333 + (500 - player_b_hp_width)), 30, player_b_hp_width, 35))
+        pygame.draw.rect(self.display, (green if (self.player_b.stats.HP / self.player_b.hero.HP) > 0.5 else damage_red)
+                         , ((1333 + (500 - player_b_hp_width)), 30, player_b_hp_width, 35))
         pygame.draw.rect(self.display, black, (1333, 30, 500, 35), 1)
+        # Work out where to put the hp text from the right
+        player_b_hp_width = 1820 - (regular_20_font.get_rect(f"{self.player_b.stats.HP}/{self.player_b.hero.HP}")[2])
+        regular_20_font.render_to(self.display, (player_b_hp_width, 36),
+                                  f"{self.player_b.stats.HP}/{self.player_b.hero.HP}", black)
         # Draw Player A Shields
         bold_36_font.render_to(self.display, (22, 84), "Shield", black)
         start_a_x_cord = 147
@@ -352,8 +357,8 @@ class Game:
         :return: None
         """
         # Only run animations ever 1/10 second
-        if (pygame.time.get_ticks() - self.elapsed) > 100:
-            self.elapsed = pygame.time.get_ticks()
+        if (pygame.time.get_ticks() - self._app.elapsed) > 100:
+            self._app.elapsed = pygame.time.get_ticks()
             self.player_a_frame = None
             self.player_b_frame = None
             if len(self.cg) > 0:

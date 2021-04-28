@@ -1,7 +1,7 @@
 """
 Holds random assets that are used such as colours
 """
-from pygame import Color, Rect, freetype
+from pygame import Color, Rect, freetype, image, transform
 from .characterSprite import CharacterSprite
 
 # Colours
@@ -12,6 +12,7 @@ white = (255, 255, 255)
 red = (255, 0, 0)
 black = (0, 0, 0)
 green = Color('#0EA453')
+damage_red = Color('#c93e2e')
 blue = Color('#49B4F0')
 
 # Font
@@ -22,6 +23,7 @@ bold_36_font = freetype.Font("assets/Montserrat/Montserrat-Bold.ttf", 36)
 regular_48_font = freetype.Font("assets/Montserrat/Montserrat-Regular.ttf", 48)
 regular_29_font = freetype.Font("assets/Montserrat/Montserrat-Regular.ttf", 29)
 regular_18_font = freetype.Font("assets/Montserrat/Montserrat-Regular.ttf", 18)
+regular_20_font = freetype.Font("assets/Montserrat/Montserrat-Regular.ttf", 25)
 
 # Icons
 back_icon = transform.scale(image.load("assets/icons/back.png"), (85, 85))
