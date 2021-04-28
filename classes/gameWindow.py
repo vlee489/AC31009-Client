@@ -27,13 +27,14 @@ class App:
         self.user_entry = ""  # Stores data entered by user
         self.hero_id = None
         self.game_data = GameData(self.user.game_data)
+        self.frame = None  # Stores next frame to show
         # Start Display
         pygame.display.init()
         self.elapsed = pygame.time.get_ticks()
         self.display = pygame.display.set_mode((1920, 1080))  # Creates display for the pygame window
+        self.elapsed = pygame.time.get_ticks()  # used to set animation speed checks
         print(pygame.display.Info())
         self.open_websocket()
-
 
     @property
     def websocket(self):
@@ -127,6 +128,11 @@ class App:
             pygame.draw.rect(self.display, light_grey, return_to_rect)
             pygame.draw.rect(self.display, black, return_to_rect, 1)
             regular_29_font.render_to(self.display, (100, 980), "Return to Menu", black)
+            # Display last hero
+            if ((pygame.time.get_ticks() - self.elapsed) > 100) or self.frame is None:
+                self.elapsed = pygame.time.get_ticks()
+                self.frame = sprite_data[self.user.hero].animation_by_id["0"].get_next_frame
+            self.display.blit(self.frame, (200, 250))
             # Display Stats
             profile = self.stats.get('profile')
             bold_48_font.render_to(self.display, (1175, 378), "Stats", black)
@@ -181,6 +187,7 @@ class App:
         elif hero_3_rect.collidepoint(mouse_pos):
             hero = 3
         if hero:
+            self.user.update_hero(hero)
             if self.lobby_type == 1:
                 self.hero_id = hero
                 self.open_lobby()
@@ -271,6 +278,6 @@ class App:
                 self.game.main()
             # Sets FPS display
             self.clock.tick(60)
-            regular_29_font.render_to(self.display, (0, 0), f"FPS: {round(self.clock.get_fps(), 1)}", black)
+            regular_18_font.render_to(self.display, (5, 5), f"FPS: {round(self.clock.get_fps(), 1)}", black)
             pygame.display.update()
             yield
