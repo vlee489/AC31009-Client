@@ -40,11 +40,12 @@ class StatData:
 
 
 class ItemData:
-    def __init__(self, ID: int, name: str, description: str, affects: list):
+    def __init__(self, ID: int, name: str, description: str, affects: list, affect_display: list):
         self.ID = ID
         self.name = name
         self.description = description
         self.affects = affects
+        self.affect_display = affect_display
 
 
 class GameData:
@@ -65,16 +66,18 @@ class GameData:
                                     moves, hero["idleAnimationID"], hero['deathAnimationID'])
             self.heroes.append(working_hero)
             self.heroes_by_id[f"{hero['id']}"] = working_hero
-        # Go through items
-        for item in game_data["items"]:
-            affects = []
-            for affect in item["affect"]:
-                affects.append(StatData(affect['status'], affect['edit']))
-            working_item = ItemData(item["id"], item["name"], item["description"], affects)
-            self.items.append(working_item)
-            self.items_by_id[f"{item['id']}"] = working_item
         # Go through Stats
         for stat in game_data["stats"]:
             working_stat = StatData(stat["id"], stat["name"])
             self.stats.append(working_stat)
             self.stats_by_id[stat["id"]] = working_stat
+        # Go through items
+        for item in game_data["items"]:
+            affects = []
+            affect_display = []
+            for affect in item["affect"]:
+                affect_display.append([self.stats_by_id[affect['status']].name, affect['edit']])
+                affects.append(StatData(affect['status'], affect['edit']))
+            working_item = ItemData(item["id"], item["name"], item["description"], affects, affect_display)
+            self.items.append(working_item)
+            self.items_by_id[f"{item['id']}"] = working_item

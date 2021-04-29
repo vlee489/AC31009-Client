@@ -393,6 +393,58 @@ class Game:
         flip_b = pygame.transform.flip(self.player_b_frame, True, False)  # Flip Player B
         self.display.blit(flip_b, (b_x_loc, b_y_loc))
 
+    def display_move_info(self, move_id: int):
+        """
+        Display data on a move on screen
+        :param move_id: move ID
+        :return: None
+        """
+        move_data = None
+        for move in self.get_player_hero.moves:
+            if move.ID == move_id:
+                move_data = move
+                break
+        if move_data:  # if there's data to show, we display the data
+            pygame.draw.rect(self.display, info_box_grey, (1474, 870, 420, 200))
+            bold_48_font.render_to(self.display, (1494, 890), f"{move_data.name}")
+            regular_18_font.render_to(self.display, (1494, 940), f"{move_data.description}")
+            bold_18_font.render_to(self.display, (1494, 970), f"Damage: ")
+            regular_18_font.render_to(self.display, (1594, 970), f"{move_data.HP}")
+            bold_18_font.render_to(self.display, (1494, 995), f"Recoil: ")
+            regular_18_font.render_to(self.display, (1594, 995), f"{move_data.recoil}")
+            bold_18_font.render_to(self.display, (1494, 1020), f"Speed: ")
+            regular_18_font.render_to(self.display, (1594, 1020), f"{move_data.speed}")
+
+    def display_item_info(self, item_id: int):
+        """
+        Display data on a item on screen
+        :param item_id: item ID
+        :return: None
+        """
+        item = self.game_data.items_by_id.get(f"{item_id}")
+        if item:
+            pygame.draw.rect(self.display, info_box_grey, (1474, 870, 420, 200))
+            bold_48_font.render_to(self.display, (1494, 890), f"{item.name}")
+            regular_18_font.render_to(self.display, (1494, 940), f"{item.description}")
+            start_x = 970
+            for affect in item.affect_display:
+                bold_18_font.render_to(self.display, (1494, start_x), f"{affect[0]}: ")
+                regular_18_font.render_to(self.display, (1594, start_x), f"{affect[1]}")
+                start_x += 25
+
+    def hover_over_info(self):
+        """
+        Checks if the user's mouse is hovering over a button
+        :return: None
+        """
+        if self.state == 3 or self.state == 4:
+            for rect in self.button_rect:
+                if rect['rect'].collidepoint(pygame.mouse.get_pos()):
+                    if rect['move_type'] == 0:  # If hovering over a move button display details on the move
+                        self.display_move_info(rect["move_id"])
+                    elif rect['move_type'] == 1:  # If over a item button show details on the item
+                        self.display_item_info(rect['move_id'])
+
     def mouse_input_manager(self, mouse_pos):
         """
         Process Mouse input for game
@@ -415,8 +467,6 @@ class Game:
         if (self.active or self.winner is not None) and not self.shown_ending:
             self.cg_player()
             self.move_processor()
-        if self.active:
-            self.display_stats()
         # We don't display stuff for state 0 as it usually changes in a split second after server responds
         if not self.active:
             if self.winner is not None:
@@ -433,6 +483,9 @@ class Game:
             self.display_items()
         elif self.state == 5:
             self.state = 2
+        if self.active:  # If active display stats and check if user is ove rover button to give info
+            self.hover_over_info()
+            self.display_stats()
         # Process messages in queue
         for x in range(len(self.messages)):
             message = self.messages.pop(0)  # first message in queue
