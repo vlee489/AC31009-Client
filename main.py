@@ -5,6 +5,7 @@ from twisted.internet import reactor
 from twisted.internet.task import Cooperator
 import sys
 import os
+import requests
 
 # Consts
 version = "0.0.1"  # Game Version for gameData matching
@@ -12,7 +13,7 @@ server = "node1.vlee.me.uk:4000"  # Location of server with port
 port = 4000  # Port server is running on Used for Twisted Reactor
 secure = True
 # Global Var
-user = classes.BootStrap(server, version, port, secure)
+user = None
 
 # To get pyInstaller working
 # https://stackoverflow.com/questions/28033003/pyinstaller-with-pygame
@@ -21,6 +22,24 @@ if getattr(sys, 'frozen', False):
 
 
 def start_up():
+    global user
+    print("Checking if server is up")
+    # Checks if server is up
+    if secure:
+        protocol = "https"
+    else:
+        protocol = 'http'
+    try:
+        requests.get(f"{protocol}://{server}/gameData")
+    except (requests.exceptions.ConnectionError, requests.exceptions.Timeout):
+        # if we get a time out means server is down, so we create a popup
+        print("Server is down!")
+        while True:
+            window = functions.server_down_window()
+            event, values = window.read()  # read values
+            if event == "Exit":
+                exit(10)
+    user = classes.BootStrap(server, version, port, secure)  # user bootstrap with user details
     print("Validating User Token")
     valid_token = user.validate_token()
     if not valid_token:
@@ -70,8 +89,6 @@ def login_gui():
 if __name__ == '__main__':
     start_up()
     app = classes.App(user)
-    # log.startLogging(sys.stdout)
-    # twisted.internet.task.LoopingCall is also possible
     coop = Cooperator()
     coop.coiterate(app.main())
     reactor.run()  # Start the Twisted reactor.
