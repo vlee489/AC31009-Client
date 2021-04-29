@@ -2,6 +2,7 @@ from .player import Player, PlayerStats
 from .gameData import GameData, HeroData, MoveData
 from .characterSprite import AnimationSprite, CharacterSprite
 from .assets import *
+from .shared import draw_button
 import pygame
 
 
@@ -90,10 +91,18 @@ class Game:
 
     @property
     def player_a_sprites(self) -> CharacterSprite:
+        """
+        Get Player a's sprites
+        :return: CharacterSprite
+        """
         return self.player_a.sprite
 
     @property
     def player_b_sprites(self) -> CharacterSprite:
+        """
+        Get Player b's sprites
+        :return: CharacterSprite
+        """
         return self.player_b.sprite
 
     def send_ws_json(self, message: dict):
@@ -108,6 +117,10 @@ class Game:
             self.state = 0  # Set state to wait for server
 
     def display_waiting_on_join(self):
+        """
+        Display waiting joining message
+        :return: None
+        """
         bold_36_font.render_to(self.display, (691, 518), "Waiting for opponent to join", black)
         bold_48_font.render_to(self.display, (56, 48), "Lobby Code: ", black)
         regular_48_font.render_to(self.display, (370, 48), f"{self.room_code}", black)
@@ -161,29 +174,22 @@ class Game:
         regular_29_font.render_to(self.display, ((1900 - p_b_width), 130), f"{self.player_b.username}", black)
 
     def display_move_type(self):
+        """
+        Display move type buttons
+        :return: None
+        """
         # Attack Box
-        pygame.draw.rect(self.display, light_grey, attack_move_rect)
-        pygame.draw.rect(self.display, black, attack_move_rect, 1)
-        bold_48_font.render_to(self.display, (270, 928), "Attack", black)
+        draw_button(self.display, attack_move_rect, "Attack")
         # item box
-        pygame.draw.rect(self.display, light_grey, item_move_rect)
-        pygame.draw.rect(self.display, black, item_move_rect, 1)
-        bold_48_font.render_to(self.display, (655, 928), "Use Item", black)
+        draw_button(self.display, item_move_rect, "Use Item")
         # Shield Box
         # get is player has shield and grey out if they don't
         if self.get_player_stats.shield <= 0:
-            box_colour = light_grey_transparent
-            text_colour = black_transparent
+            draw_button(self.display, shield_rect, "Shield", disabled=True)
         else:
-            box_colour = light_grey
-            text_colour = black
-        pygame.draw.rect(self.display, box_colour, shield_rect)
-        pygame.draw.rect(self.display, text_colour, shield_rect, 1)
-        bold_48_font.render_to(self.display, (1086, 928), "Shield", text_colour)
+            draw_button(self.display, shield_rect, "Shield")
         # Skip Box
-        pygame.draw.rect(self.display, light_grey, skip_rect)
-        pygame.draw.rect(self.display, black, skip_rect, 1)
-        bold_48_font.render_to(self.display, (1510, 928), "Skip", black)
+        draw_button(self.display, skip_rect, "Skip")
 
     def move_type_input(self, mouse_pos):
         """
@@ -216,6 +222,10 @@ class Game:
             })
 
     def display_wait_for_opponent(self):
+        """
+        Display wait for opponent
+        :return: None
+        """
         bold_64_font.render_to(self.display, (570, 920), "Waiting on opponent....", black)
 
     def display_back_button(self):
@@ -226,22 +236,6 @@ class Game:
         pygame.draw.rect(self.display, light_grey, back_button_rect)
         pygame.draw.rect(self.display, black, back_button_rect, 1)
         self.display.blit(back_icon, (119, 908))
-
-    def _display_button_rect(self, name: str, rect: pygame.Rect, start_x: int):
-        """
-        Place rect with text centered
-        :param name: text to place
-        :param rect: Rect to draw for box
-        :param start_x: X location to place button
-        :return: None
-        """
-        # Work out where the text will go
-        name_width = bold_48_font.get_rect(f"{name}")[2]
-        text_x = (start_x + 175) - (name_width // 2)
-        # Display button
-        pygame.draw.rect(self.display, light_grey, rect)
-        pygame.draw.rect(self.display, black, rect, 1)
-        bold_48_font.render_to(self.display, (text_x, 928), f"{name}", black)
 
     def display_attacks(self):
         """
@@ -260,10 +254,14 @@ class Game:
                 "move_id": attack.ID,
                 "move_type": 0  # 0: attack, 1: item, 2:shield, 3: skip
             })
-            self._display_button_rect(attack.name, working_rect, start_x)
+            draw_button(self.display, working_rect, attack.name)
             start_x += 404  # Set location of next button
 
     def display_items(self):
+        """
+        Displays items that can be used
+        :return: None
+        """
         self.button_rect = []  # Empty array
         # Display back button
         self.display_back_button()
@@ -275,7 +273,7 @@ class Game:
                 "move_id": item.ID,
                 "move_type": 1  # 0: attack, 1: item, 2:shield, 3: skip
             })
-            self._display_button_rect(item.name, working_rect, start_x)
+            draw_button(self.display, working_rect, item.name)
             start_x += 404  # Set location of next button
 
     def move_input(self, mouse_pos):
@@ -300,6 +298,10 @@ class Game:
             self.state = 2
 
     def display_winner(self):
+        """
+        Display winner
+        :return: None
+        """
         if self.winner == self.player_num:
             message = "You are the winner!"
         else:
@@ -307,9 +309,7 @@ class Game:
         message_x = 962 - ((bold_48_font.get_rect(f"{message}")[2]) // 2)
         bold_48_font.render_to(self.display, (message_x, 60), f"{message}", black)
         # Draw back button
-        pygame.draw.rect(self.display, light_grey, return_to_rect)
-        pygame.draw.rect(self.display, black, return_to_rect, 1)
-        regular_29_font.render_to(self.display, (100, 980), "Return to Menu", black)
+        draw_button(self.display, return_to_rect, "Return to Menu", small_font=True)
 
     def move_processor(self):
         """

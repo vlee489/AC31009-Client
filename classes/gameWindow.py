@@ -11,6 +11,7 @@ from .gameData import GameData
 import json
 from twisted.internet import ssl
 from autobahn.twisted.websocket import connectWS
+from .shared import draw_button
 
 
 class App:
@@ -38,6 +39,10 @@ class App:
 
     @property
     def websocket(self):
+        """
+        Get websocket
+        :return: Websocket
+        """
         if self._factory:
             return self._factory.client_protocol
         else:
@@ -53,6 +58,10 @@ class App:
         reactor.stop()
 
     def open_websocket(self):
+        """
+        Open Websocket
+        :return: None
+        """
         self._factory = URPGClientFactory(self.user.server, self, self.user.token, self.user.secure)
         # Checks if connection is secure
         if self._factory.isSecure:
@@ -63,14 +72,27 @@ class App:
         reactor.connectTCP('127.0.0.1', self.user.port, self._factory)  # Start reactor
 
     def close_websocket(self):
+        """
+        Close websocket
+        :return: None
+        """
         if self.websocket:
             self.websocket.sendClose(1000)
 
     def ws_send_json(self, message: dict):
+        """
+        Send message via websocket
+        :param message: message to send
+        :return: None
+        """
         payload = json.dumps(message, ensure_ascii=False).encode('utf8')
         self.websocket.sendMessage(payload)
 
     def back_to_menu(self):
+        """
+        Return to main menu
+        :return: None
+        """
         self.state = 0
         self.main_menu_display()
         self.game = None
@@ -80,37 +102,26 @@ class App:
         Displays Menu
         :return: None
         """
-        self.display.fill(white)
         bold_48_font.render_to(self.display, (48, 48), "Untitled online RPG", black)
         regular_29_font.render_to(self.display, (48, 100), f"User: {self.user.username}", black)
         # Join Lobby
-        pygame.draw.rect(self.display, light_grey, join_lobby_rect)
-        pygame.draw.rect(self.display, black, join_lobby_rect, 1)
-        bold_48_font.render_to(self.display, (823, 250), "Enter Lobby", black)
+        draw_button(self.display, join_lobby_rect, "Enter Lobby")
         # Create Lobby
-        pygame.draw.rect(self.display, light_grey, create_lobby_rect)
-        pygame.draw.rect(self.display, black, create_lobby_rect, 1)
-        bold_48_font.render_to(self.display, (792, 436), "Create Lobby", black)
+        draw_button(self.display, create_lobby_rect, "Create Lobby")
         # View Stats
-        pygame.draw.rect(self.display, light_grey, view_stats_rect)
-        pygame.draw.rect(self.display, black, view_stats_rect, 1)
-        bold_48_font.render_to(self.display, (827, 630), "View Stats", black)
+        draw_button(self.display, view_stats_rect, "View Stats")
         # Exit
-        pygame.draw.rect(self.display, light_grey, exit_main_menu_rect)
-        pygame.draw.rect(self.display, black, exit_main_menu_rect, 1)
-        bold_48_font.render_to(self.display, (912, 825), "Exit", black)
+        draw_button(self.display, exit_main_menu_rect, "Exit")
 
     def main_menu_selector(self, mouse_pos):
         """
         Handles Main Menu input
-        :return:
+        :return: None
         """
         if join_lobby_rect.collidepoint(mouse_pos):
-            print("join Lobby")
             self.lobby_type = 2
             self.hero_select_screen()
         elif create_lobby_rect.collidepoint(mouse_pos):
-            print("create Lobby")
             self.lobby_type = 1
             self.hero_select_screen()
         elif view_stats_rect.collidepoint(mouse_pos):
@@ -120,13 +131,15 @@ class App:
             self.__exit()
 
     def stats_display(self):
+        """
+        Display the stats on screen
+        :return: None
+        """
         if self.stats:
             self.state = 3
             self.display.fill(white)
             # Draw back button
-            pygame.draw.rect(self.display, light_grey, return_to_rect)
-            pygame.draw.rect(self.display, black, return_to_rect, 1)
-            regular_29_font.render_to(self.display, (100, 980), "Return to Menu", black)
+            draw_button(self.display, return_to_rect, "Return to Menu", small_font=True)
             # Display last hero
             if ((pygame.time.get_ticks() - self.elapsed) > 100) or self.frame is None:
                 self.elapsed = pygame.time.get_ticks()
@@ -142,10 +155,20 @@ class App:
             self.error_display("Unable to get user stats")
 
     def stats_selector(self, mouse_pos):
-        if return_to_rect.collidepoint(mouse_pos):
+        """
+        process inputs while on stats screen
+        :param mouse_pos: mouse position
+        :return: None
+        """
+        if return_to_rect.collidepoint(mouse_pos):  # Return to main menu
             self.state = 0
 
     def error_display(self, error_message: str or None):
+        """
+        Display Error
+        :param error_message: error message to show
+        :return: None
+        """
         if error_message is not None:
             self.error_message = error_message
         self.state = 69
@@ -153,29 +176,30 @@ class App:
         bold_48_font.render_to(self.display, (48, 48), "Untitled online RPG", black)
         regular_29_font.render_to(self.display, (48, 100), f"User: {self.user.username}", black)
         bold_48_font.render_to(self.display, (700, 436), f"Error: {self.error_message}", black)
-        pygame.draw.rect(self.display, light_grey, exit_main_menu_rect)
-        pygame.draw.rect(self.display, black, exit_main_menu_rect, 1)
-        bold_48_font.render_to(self.display, (821, 825), "Main Menu", black)
+        draw_button(self.display, exit_main_menu_rect, "Main Menu", small_font=True)
 
     def error_selector(self, mouse_pos):
+        """
+        process inputs while on error screen
+        :param mouse_pos: mouse position
+        :return: None
+        """
         if exit_main_menu_rect.collidepoint(mouse_pos):
             self.state = 0
             self.main_menu_display()
 
     def hero_select_screen(self):
+        """
+        Display heroes available to select
+        :return:
+        """
         self.state = 4
         self.display.fill(white)
         bold_48_font.render_to(self.display, (48, 48), "Select your Hero", black)
         # Buttons
-        pygame.draw.rect(self.display, light_grey, hero_1_rect)
-        pygame.draw.rect(self.display, black, hero_1_rect, 1)
-        bold_48_font.render_to(self.display, (277, 915), "Gatron", black)
-        pygame.draw.rect(self.display, light_grey, hero_2_rect)
-        pygame.draw.rect(self.display, black, hero_2_rect, 1)
-        bold_48_font.render_to(self.display, (660, 915), "Maxmus", black)
-        pygame.draw.rect(self.display, light_grey, hero_3_rect)
-        pygame.draw.rect(self.display, black, hero_3_rect, 1)
-        bold_48_font.render_to(self.display, (1101, 915), "Boxer", black)
+        draw_button(self.display, hero_1_rect, "Gatron")
+        draw_button(self.display, hero_2_rect, "Maxmus")
+        draw_button(self.display, hero_3_rect, "Boxer")
         # Show heroes on screen above buttons
         if ((pygame.time.get_ticks() - self.elapsed) > 100) or self.frame is None:
             self.elapsed = pygame.time.get_ticks()
@@ -187,6 +211,11 @@ class App:
         self.display.blit(self.frame, (0, 0))
 
     def hero_select_selector(self, mouse_pos):
+        """
+        Process mouse input for hero select screen
+        :param mouse_pos: mouse position
+        :return: None
+        """
         hero = None
         if hero_1_rect.collidepoint(mouse_pos):
             hero = 1
@@ -207,7 +236,7 @@ class App:
     def open_lobby(self):
         """
         Open a game lobby
-        :return:
+        :return: None
         """
         lobby_code = self.user.open_lobby(False)  # Open Lobby
         if lobby_code:  # Enter lobby state
@@ -217,25 +246,37 @@ class App:
             self.error_display("Unable to open lobby")
 
     def join_lobby_display(self):
+        """
+        Join lobby screen
+        :return: None
+        """
         self.state = 1
         self.display.fill(white)
         bold_48_font.render_to(self.display, (48, 48), "Enter Lobby Code", black)
         # button
-        pygame.draw.rect(self.display, light_grey, enter_lobby_rect)
-        pygame.draw.rect(self.display, black, enter_lobby_rect, 1)
-        bold_48_font.render_to(self.display, (810, 615), "Join Lobby", black)
+        draw_button(self.display, enter_lobby_rect, "Join Lobby")
         # txt box
         regular_18_font.render_to(self.display, (697, 474), "Enter Lobby Code", black)
         bold_36_font.render_to(self.display, (697, 496), f"{self.user_entry}", black)
         pygame.draw.rect(self.display, light_grey, (697, 540, 500, 3))
 
     def join_lobby_key_press(self, event):
+        """
+        process keyboard input for join lobby
+        :param event: pygame event
+        :return: None
+        """
         if event.key == pygame.K_BACKSPACE:  # If backspace remove last char
             self.user_entry = self.user_entry[:-1]
         else:
             self.user_entry += event.unicode
 
     def join_lobby_selector(self, mouse_pos):
+        """
+        Process mouse input for join lobby
+        :param mouse_pos: mouse position
+        :return: None
+        """
         if enter_lobby_rect.collidepoint(mouse_pos):
             if self.user.check_lobby_code(self.user_entry):
                 self.game = Game(self.user_entry, self, self.hero_id)
