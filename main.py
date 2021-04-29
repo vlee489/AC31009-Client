@@ -37,7 +37,7 @@ def start_up():
         while True:
             window = functions.server_down_window()
             event, values = window.read()  # read values
-            if event == "Exit":
+            if event == "Exit" or event == sg.WIN_CLOSED:
                 exit(10)
     user = classes.BootStrap(server, version, port, secure)  # user bootstrap with user details
     print("Validating User Token")
