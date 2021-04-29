@@ -3,6 +3,9 @@ import json
 
 
 class SpriteSheet:
+    """
+    Class for managing sprite sheets and loading them in and getting the next frame
+    """
     def __init__(self, root_location: str, sprite_id: int):
         self.next_frame = 1
         with open(f"{root_location}\\data.json", "r") as file:
@@ -33,13 +36,21 @@ class SpriteSheet:
 
     @property
     def animation_played_through(self) -> bool:
+        """
+        Check if the the animation has played all the frames yet
+        :return: if animation has played through for the sprite yet
+        """
         if self.next_frame == 1:
             return True
         else:
             return False
 
     @property
-    def get_next_frame(self):
+    def get_next_frame(self) -> pygame.surface:
+        """
+        Get the next fame of animation to show
+        :return: next frame of animation
+        """
         # work out where to cut sprite out from
         if self.load_mode == "horizontal":
             y = 0

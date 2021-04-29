@@ -1,6 +1,6 @@
 from .player import Player, PlayerStats
 from .gameData import GameData, HeroData, MoveData
-from .characterSprite import AnimationSprite, CharacterSprite
+from .characterSprite import AnimationSprite
 from .assets import *
 from .shared import draw_button
 import pygame

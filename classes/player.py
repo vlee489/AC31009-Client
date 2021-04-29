@@ -30,13 +30,21 @@ class PlayerStats:
         self.speed_length = speed_length
 
     @property
-    def get_hp_diff(self):
+    def get_hp_diff(self) -> int:
+        """
+        Get the HP difference
+        :return: HP diff
+        """
         diff = self.previous_hp - self.HP
         self.previous_hp = self.HP
         return diff
 
     @property
-    def get_shield_diff(self):
+    def get_shield_diff(self) -> int:
+        """
+        Get the shield count difference
+        :return: Shield count diff
+        """
         diff = self.previous_shield - self.shield
         self.previous_shield = self.shield
         return diff
