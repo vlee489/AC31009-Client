@@ -9,11 +9,15 @@ class Game:
     """
     Actually runs the game itself when in a room/lobby
     """
+
     def __init__(self, room_code: str, app, hero_id: int):
         print(f"room code: {room_code}")
         self._app = app  # Stores ref back to the app the launches the Game object
         self.room_code = room_code  # Stores the room-code that needs sent back to the server per move execution
+        # Queues
         self.messages = []  # Stores all the messages coming in via websockets
+        self.moves = []  # Holds all the moves that need to be played out
+        self.cg = []  # Holds all the character graphics that need to be played out still
         self.state = 0
         # 0 : Waiting on Response from server
         # 1 : Waiting on other player
@@ -30,8 +34,6 @@ class Game:
         self.winner = None  # Stores the winner at the end of the game
         # Stores Sprites for player models
         self.button_rect = []  # Used to store where the rects are input checking
-        self.moves = []  # Holds all the moves that need to be played out
-        self.cg = []  # Holds all the character graphics that need to be played out still
         # stores frames for each character, so they can be displayed again
         self.player_a_frame = None
         self.player_b_frame = None
@@ -309,23 +311,9 @@ class Game:
         pygame.draw.rect(self.display, black, return_to_rect, 1)
         regular_29_font.render_to(self.display, (100, 980), "Return to Menu", black)
 
-    def mouse_input_manager(self, mouse_pos):
-        """
-        Process Mouse input for game
-        :param mouse_pos: mouse position
-        :return: None
-        """
-        if self.state == 2:
-            self.move_type_input(mouse_pos)
-        elif self.state == 3 or self.state == 4:
-            self.move_input(mouse_pos)
-        elif (not self.active) and (self.winner is not None):
-            if return_to_rect.collidepoint(mouse_pos):
-                self._app.back_to_menu()
-
     def move_processor(self):
         """
-        Turns the moves into cg movements
+        Turns the moves into cg (character graphics) movements
         :return: None
         """
         hero_move: MoveData
@@ -383,7 +371,7 @@ class Game:
         if (self.winner is not None) and (not self.shown_ending) and (len(self.cg) == 0):
             if self.winner == 0:
                 loser_animation_id = self.player_b.hero.death_animation
-                self.player_b_frame = self.player_b_sprites.animation_by_id[ f"{loser_animation_id}"].get_next_frame
+                self.player_b_frame = self.player_b_sprites.animation_by_id[f"{loser_animation_id}"].get_next_frame
                 if self.player_b_sprites.animation_by_id[f"{loser_animation_id}"].animation_played_through:
                     self.shown_ending = True
             if self.winner == 1:
@@ -404,6 +392,20 @@ class Game:
         self.display.blit(self.player_a_frame, (10, a_y_loc))
         flip_b = pygame.transform.flip(self.player_b_frame, True, False)  # Flip Player B
         self.display.blit(flip_b, (b_x_loc, b_y_loc))
+
+    def mouse_input_manager(self, mouse_pos):
+        """
+        Process Mouse input for game
+        :param mouse_pos: mouse position
+        :return: None
+        """
+        if self.state == 2:
+            self.move_type_input(mouse_pos)
+        elif self.state == 3 or self.state == 4:
+            self.move_input(mouse_pos)
+        elif (not self.active) and (self.winner is not None):
+            if return_to_rect.collidepoint(mouse_pos):
+                self._app.back_to_menu()
 
     def main(self):
         """

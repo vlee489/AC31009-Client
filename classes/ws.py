@@ -44,7 +44,7 @@ class URPGClientProtocol(WebSocketClientProtocol):
         :param reason:
         :return: None
         """
-        print('WebSocket connection closed: {0}'.format(reason))
+        print('WebSocket connection closed')
         self.factory.client_protocol = None
 
 

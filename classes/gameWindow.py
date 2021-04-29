@@ -43,15 +43,14 @@ class App:
         else:
             return None
 
-    @staticmethod
-    def __exit():
+    def __exit(self):
         """
         Exit Application
         :return: None
         """
-        pygame.quit()
+        self._run = False
+        self.websocket.sendClose()
         reactor.stop()
-        exit(0)
 
     def open_websocket(self):
         self._factory = URPGClientFactory(self.user.server, self, self.user.token, self.user.secure)

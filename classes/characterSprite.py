@@ -4,7 +4,7 @@ from .spriteSheet import SpriteSheet
 
 class CharacterSprite:
     """
-    Imports all the sprites for a charecter
+    Imports all the sprites for a character
     """
     def __init__(self, folder_location: str):
         self.animation_by_id = {}
