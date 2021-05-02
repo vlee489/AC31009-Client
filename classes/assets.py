@@ -14,7 +14,7 @@ red = (255, 0, 0)
 black = (0, 0, 0)
 green = Color('#0EA453')
 damage_red = Color('#c93e2e')
-blue = Color('#49B4F0')
+blue = Color('#0948db')
 info_box_grey = Color(214, 214, 214, 25)
 
 # Font

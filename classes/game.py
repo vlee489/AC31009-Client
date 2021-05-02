@@ -42,6 +42,7 @@ class Game:
         # To stop audio repeating for move
         self.player_a_audio = False
         self.player_b_audio = False
+        self.background = pygame.image.load("assets/bg/background.png")
         # Attempt to join room
         self.send_ws_json({
             "action": "join",
@@ -135,12 +136,14 @@ class Game:
         player_b_hp_width = int((self.player_b.stats.HP / self.player_b.hero.HP) * 500)
         # Draw Player A Health
         bold_36_font.render_to(self.display, (22, 34), "HP", black)
+        pygame.draw.rect(self.display, white, (86, 30, 500, 35))
         pygame.draw.rect(self.display, (green if (self.player_a.stats.HP / self.player_a.hero.HP) > 0.5 else damage_red)
                          , (86, 30, player_a_hp_width, 35))
         pygame.draw.rect(self.display, black, (86, 30, 500, 35), 1)
         regular_20_font.render_to(self.display, (100, 36), f"{self.player_a.stats.HP}/{self.player_a.hero.HP}", black)
         # Draw Player B Health
         bold_36_font.render_to(self.display, (1848, 34), "HP", black)
+        pygame.draw.rect(self.display, white, (1333, 30, 500, 35))
         pygame.draw.rect(self.display, (green if (self.player_b.stats.HP / self.player_b.hero.HP) > 0.5 else damage_red)
                          , ((1333 + (500 - player_b_hp_width)), 30, player_b_hp_width, 35))
         pygame.draw.rect(self.display, black, (1333, 30, 500, 35), 1)
@@ -226,7 +229,7 @@ class Game:
         Display wait for opponent
         :return: None
         """
-        bold_64_font.render_to(self.display, (570, 920), "Waiting on opponent....", black)
+        bold_64_font.render_to(self.display, (570, 920), "Waiting on opponent....", light_grey)
 
     def display_back_button(self):
         """
@@ -304,6 +307,8 @@ class Game:
         """
         if self.winner == self.player_num:
             message = "You are the winner!"
+        elif self.winner == 2:
+            message = "Game Draw!"
         else:
             message = "You've Lost!"
         message_x = 962 - ((bold_48_font.get_rect(f"{message}")[2]) // 2)
@@ -385,8 +390,8 @@ class Game:
         if self.player_b_frame is None:
             self.player_b_frame = self.player_b_sprites.animation_by_id["0"].get_next_frame
         # Calculate where sprite should go on window
-        a_y_loc = 830 - self.player_a_frame.get_height()
-        b_y_loc = 830 - self.player_b_frame.get_height()
+        a_y_loc = 950 - self.player_a_frame.get_height()
+        b_y_loc = 950 - self.player_b_frame.get_height()
         b_x_loc = 1920 - (10 + self.player_b_frame.get_width())
         # Display frame
         self.display.blit(self.player_a_frame, (10, a_y_loc))
@@ -464,6 +469,7 @@ class Game:
         Runs the game event loop to display UI and process inputs
         :return: None
         """
+        self.display.blit(self.background, (0, 0))
         if (self.active or self.winner is not None) and not self.shown_ending:
             self.cg_player()
             self.move_processor()
