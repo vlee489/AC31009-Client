@@ -5,7 +5,7 @@ Client for the AC31009 Game Module
 
 - [Python 3.9](https://www.python.org/)
 - pip (*typically installed with Python*)
-- AC31009-Server hosted somewhere
+- [AC31009-Server](https://github.com/vlee489/AC31009-Server) hosted somewhere
 
 ## Precompiled Executables 
 
