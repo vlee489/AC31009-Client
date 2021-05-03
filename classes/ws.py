@@ -44,7 +44,8 @@ class URPGClientProtocol(WebSocketClientProtocol):
         :param reason:
         :return: None
         """
-        print('WebSocket connection closed')
+        print('WebSocket connection closed.')
+        self.factory.app.error_display("WS Disconnected: Please Restart")
         self.factory.client_protocol = None
 
 

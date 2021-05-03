@@ -55,7 +55,8 @@ class App:
         :return: None
         """
         self._run = False
-        self.websocket.sendClose()
+        if self.websocket:
+            self.websocket.sendClose()
         reactor.stop()
 
     def open_websocket(self):
@@ -176,7 +177,8 @@ class App:
         self.display.fill(white)
         bold_48_font.render_to(self.display, (48, 48), "Untitled online RPG", black)
         regular_29_font.render_to(self.display, (48, 100), f"User: {self.user.username}", black)
-        bold_48_font.render_to(self.display, (700, 436), f"Error: {self.error_message}", black)
+        text_width = bold_48_font.get_rect(f"{self.error_message}")[2]
+        bold_48_font.render_to(self.display, ((960-(text_width//2)), 436), f"Error: {self.error_message}", black)
         draw_button(self.display, exit_main_menu_rect, "Main Menu", small_font=True)
 
     def error_selector(self, mouse_pos):
