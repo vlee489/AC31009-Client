@@ -46,7 +46,7 @@ The Sprites used are the follow. These are under their agreements listed on thei
 ## Background
 Backgrounds used are from:
 
-- [Free Pixel-art background, desert (Day/Night) by blank-can~~~~vas](https://blank-canvas.itch.io/parallax-pixel-art-background-desert)
+- [Free Pixel-art background, desert (Day/Night) by blank-canvas](https://blank-canvas.itch.io/parallax-pixel-art-background-desert)
   
 ### Font
 Fonts used:
@@ -61,7 +61,7 @@ Fonts used:
 ### Sounds
 
 - [MixKit](https://mixkit.co/): for sounds from MixKit used under their licence [here](https://mixkit.co/license/#sfxFree)
-- [Sound FX Pack 1 by edwardcufaude](https://edwardcufaude.itch.io/soundfxpack1): for sounds not starting with mixkit used under their licence
+- [Sound FX Pack 1 by edwardcufaude](https://edwardcufaude.itch.io/soundfxpack1): for sounds not starting with mixkit, royalty free. 
   
 ## Packages
 
