@@ -11,7 +11,7 @@ import requests
 version = "0.0.1"  # Game Version for gameData matching
 server = "node1.vlee.me.uk:4000"  # Location of server with port
 port = 4000  # Port server is running on Used for Twisted Reactor
-secure = True
+secure = True  # If the server uses a SSL cert (i.e. production mode)
 # Global Var
 user = None
 

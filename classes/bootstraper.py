@@ -38,7 +38,8 @@ class BootStrap:
         :param server: server link
         :param version: version number
         """
-        self.dataDir = f"{get_user_data_dir('AC31009-Untitled-RPG')}/storage.json"
+        self.dir_name = "AC31009-Untitled-RPG"
+        self.dataDir = f"{get_user_data_dir(self.dir_name)}/storage.json"
         self.server = server
         self.version = version
         self.port = port
@@ -80,8 +81,8 @@ class BootStrap:
             "ID": "",
             "hero": 1
         }
-        if not os.path.isdir(get_user_data_dir('AC31009-Untitled-RPG')):
-            os.mkdir(get_user_data_dir('AC31009-Untitled-RPG'))
+        if not os.path.isdir(get_user_data_dir(self.dir_name)):
+            os.mkdir(get_user_data_dir(self.dir_name))
         with open(self.dataDir, 'w+') as dataFile:
             json.dump(settings, dataFile, indent=4)
 

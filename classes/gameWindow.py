@@ -31,6 +31,7 @@ class App:
         self.frame = None  # Stores next frame to show
         # Start Display
         pygame.display.init()
+        pygame.display.set_caption('Untitled Online RPG')  # Set window name
         self.elapsed = pygame.time.get_ticks()
         self.display = pygame.display.set_mode((1920, 1080))  # Creates display for the pygame window
         self.elapsed = pygame.time.get_ticks()  # used to set animation speed checks
@@ -257,7 +258,12 @@ class App:
         draw_button(self.display, enter_lobby_rect, "Join Lobby")
         # txt box
         regular_18_font.render_to(self.display, (697, 474), "Enter Lobby Code", black)
-        bold_36_font.render_to(self.display, (697, 496), f"{self.user_entry}", black)
+        if (pygame.time.get_ticks() - self.elapsed) > 250:
+            # This if statement is used to create a flashing cursor
+            self.elapsed = pygame.time.get_ticks()
+            bold_36_font.render_to(self.display, (697, 496), f"{self.user_entry}", black)
+        else:
+            bold_36_font.render_to(self.display, (697, 496), f"{self.user_entry}|", black)
         pygame.draw.rect(self.display, light_grey, (697, 540, 500, 3))
 
     def join_lobby_key_press(self, event):
@@ -268,6 +274,13 @@ class App:
         """
         if event.key == pygame.K_BACKSPACE:  # If backspace remove last char
             self.user_entry = self.user_entry[:-1]
+        elif event.key == pygame.K_RETURN:  # If enter is pressed
+            # enter game lobby
+            if self.user.check_lobby_code(self.user_entry):
+                self.game = Game(self.user_entry, self, self.hero_id)
+                self.state = 2
+            else:
+                self.error_display("Invalid Room Code!")
         else:
             self.user_entry += event.unicode
 
