@@ -1,6 +1,8 @@
 # AC31009-Client
 Client for the AC31009 Game Module
 
+**This game has been only on Windows**
+
 ## Requirements
 
 - [Python 3.9](https://www.python.org/)
